@@ -1,17 +1,34 @@
-let page = document.getElementById('buttonDiv');
-const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
+import CursoredToSlack from "./cursoredtoslack";
 
-function constructOptions(kButtonColors) {
-    for (let item of kButtonColors) {
-        let button = document.createElement('button');
-        button.style.backgroundColor = item;
-        button.addEventListener('click', function () {
-            chrome.storage.sync.set({color: item}, function () {
-                console.log('color is ' + item);
-            })
-        });
-        page.appendChild(button);
-    }
-}
+const cts = new CursoredToSlack(chrome);
+console.log(chrome);
 
-constructOptions(kButtonColors);
+// ok
+cts.setOptions({test: "is ok?"}).then(options => {
+    console.log(options);
+    cts.getOptions().then(got => {
+        console.log(got);
+    });
+});
+
+
+// sample:
+// let page = document.getElementById('buttonDiv');
+// const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
+//
+// function constructOptions(kButtonColors) {
+//     for (let item of kButtonColors) {
+//         let button = document.createElement('button');
+//         button.style.backgroundColor = item;
+//         button.addEventListener('click', function () {
+//             chrome.storage.sync.set({color: item}, function () {
+//                 console.log('color is ' + item);
+//             })
+//         });
+//         page.appendChild(button);
+//     }
+// }
+//
+// constructOptions(kButtonColors);
+
+
