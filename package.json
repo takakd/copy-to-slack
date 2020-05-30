@@ -1,12 +1,16 @@
 {
   "scripts": {
-    "build": "babel ./src/background.js --out-file ./background.js && babel ./src/options.js --out-file ./options.js && babel ./src/popup.js --out-file ./popup.js"
+    "build": "webpack --mode production --config webpack.config.js --env.entry=background && webpack --mode production --config webpack.config.js --env.entry=options && webpack --mode production --config webpack.config.js --env.entry=popup",
+    "build:dev": "webpack --mode development --config webpack.config.js --env.entry=background && webpack  --mode development --config webpack.config.js --env.entry=options && webpack  --mode development --config webpack.config.js --env.entry=popup",
+    "test": "jest"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.1",
     "@babel/preset-env": "^7.10.1",
-    "jest": "^26.0.1"
+    "babel-loader": "^8.1.0",
+    "jest": "^26.0.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "dependencies": {}
 }
