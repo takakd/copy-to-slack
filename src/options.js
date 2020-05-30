@@ -1,13 +1,17 @@
 import CursoredToSlack from "./cursoredtoslack";
 
 const cts = new CursoredToSlack(chrome);
-console.log(chrome);
 
-// ok
-cts.setOptions({test: "is ok?"}).then(options => {
-    console.log(options);
-    cts.getOptions().then(got => {
-        console.log(got);
+cts.getOptions().then(got => {
+    // previous
+    console.log('old', got);
+    // set new one.
+    cts.setOptions({test: "is ok?"}).then(options => {
+        console.log('new one', options);
+        cts.getOptions().then(got => {
+            // check
+            console.log('check', got);
+        });
     });
 });
 
