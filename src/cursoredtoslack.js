@@ -7,6 +7,12 @@
 const OptionsKey = "hoge";
 
 /**
+ * ContextMenuId
+ * @type {string}
+ */
+const ContextMenuId = "fuga";
+
+/**
  */
 export default class CursoredToSlack {
 
@@ -42,6 +48,53 @@ export default class CursoredToSlack {
                 resolve(true)
             })
         })
+    }
+
+    /**
+     * contextMenus.onClicked callback.
+     *
+     * this is used by addContextMenu() function.
+     * @see {@link https://developer.chrome.com/extensions/contextMenus#event-onClicked}
+     */
+    contextMenuOnClickedCallback(info) {
+        const isMyEvent = ContextMenuId === info.menuItemId;
+        if (!isMyEvent) {
+            return;
+        }
+
+        let message = "";
+        const orderList = ["selectionText", "linkUrl", "srcUrl", "pageUrl", "frameUrl"];
+        for (const order of orderList) {
+            if (info[order]) {
+                message = info[order];
+                break;
+            }
+        }
+        console.log(message);
+        // console.log("item " + info.menuItemId + " was clicked");
+        // console.log("info: " + JSON.stringify(info));
+        // console.log("tab: " + JSON.stringify(tab));
+
+        // TODO: send message to slack and send chrome-message to ui.
+    }
+
+    /**
+     * Add context menu.
+     */
+    addContextMenu() {
+
+        // add onClicked callback.
+        this.chrome.contextMenus.onClicked.addListener(this.contextMenuOnClickedCallback);
+
+        //const contexts = ["page", "selection", "link", "editable", "image", "video", "audio"];
+        const contexts = ["all"];
+        this.chrome.contextMenus.create({
+            id: ContextMenuId,
+            type: "normal",
+            title: "Send to Slack",
+            contexts: contexts,
+            visible: true
+        });
     }
 }
 
