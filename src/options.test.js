@@ -1,19 +1,19 @@
 import {
-    DomIdList,
-    getFormValues,
-    validateButtons,
-    validateForm,
-    validateSlackChannelName,
-    validateSlackChannelNameValue,
-    validateSlackWebhookUrl,
-    validateSlackWebhookUrlValue
-} from './options';
+  DomIdList,
+  getFormValues,
+  validateButtons,
+  validateForm,
+  validateSlackChannelName,
+  validateSlackChannelNameValue,
+  validateSlackWebhookUrl,
+  validateSlackWebhookUrlValue,
+} from "./options";
 
 /**
  * @see {@link https://jestjs.io/docs/en/tutorial-jquery}
  */
 const setMockHtml = (document) => {
-    document.body.innerHTML = `
+  document.body.innerHTML = `
     <form class="mt-4">
         <div class="form-group">
             <label for="slackWebhookUrlInput">Slack Webhook URL</label>
@@ -44,94 +44,125 @@ const setMockHtml = (document) => {
         </div>
     </form>    
     `;
-    return document;
+  return document;
 };
-describe('options', () => {
-    test('getFormValues', async () => {
-        setMockHtml(document);
-        document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
-        document.getElementById(DomIdList.channel).value = "#webhook";
+describe("options", () => {
+  test("getFormValues", async () => {
+    setMockHtml(document);
+    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
+    document.getElementById(DomIdList.channel).value = "#webhook";
 
-        const got = getFormValues();
-        expect(got[DomIdList.webhookUrl]).toBe('https://localhost');
-        expect(got[DomIdList.channel]).toBe('#webhook');
-    });
+    const got = getFormValues();
+    expect(got[DomIdList.webhookUrl]).toBe("https://localhost");
+    expect(got[DomIdList.channel]).toBe("#webhook");
+  });
 
-    test('validateForm', async () => {
-        setMockHtml(document);
-        document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
-        document.getElementById(DomIdList.channel).value = "#webhook";
-        let isValid = validateForm();
-        expect(true).toBe(isValid);
-        expect(false).toBe(document.getElementById(DomIdList.webhookUrl).classList.contains("is-invalid"));
-        expect(false).toBe(document.getElementById(DomIdList.webhookUrl).classList.contains("is-invalid"));
+  test("validateForm", async () => {
+    setMockHtml(document);
+    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
+    document.getElementById(DomIdList.channel).value = "#webhook";
+    let isValid = validateForm();
+    expect(true).toBe(isValid);
+    expect(false).toBe(
+      document
+        .getElementById(DomIdList.webhookUrl)
+        .classList.contains("is-invalid")
+    );
+    expect(false).toBe(
+      document
+        .getElementById(DomIdList.webhookUrl)
+        .classList.contains("is-invalid")
+    );
 
-        setMockHtml(document);
-        document.getElementById(DomIdList.webhookUrl).value = "";
-        document.getElementById(DomIdList.channel).value = "";
-        isValid = validateForm();
-        expect(false).toBe(isValid);
-        expect(true).toBe(document.getElementById(DomIdList.webhookUrl).classList.contains("is-invalid"));
-        expect(true).toBe(document.getElementById(DomIdList.webhookUrl).classList.contains("is-invalid"));
-    });
+    setMockHtml(document);
+    document.getElementById(DomIdList.webhookUrl).value = "";
+    document.getElementById(DomIdList.channel).value = "";
+    isValid = validateForm();
+    expect(false).toBe(isValid);
+    expect(true).toBe(
+      document
+        .getElementById(DomIdList.webhookUrl)
+        .classList.contains("is-invalid")
+    );
+    expect(true).toBe(
+      document
+        .getElementById(DomIdList.webhookUrl)
+        .classList.contains("is-invalid")
+    );
+  });
 
-    test('validateSlackWebhookUrlValue', async () => {
-        expect(validateSlackWebhookUrlValue('https://localhost')).toBe('');
-        expect(validateSlackWebhookUrlValue('http://localhost')).not.toBe('');
-        expect(validateSlackWebhookUrlValue('test')).not.toBe('');
-        expect(validateSlackWebhookUrlValue('')).not.toBe('');
-    });
+  test("validateSlackWebhookUrlValue", async () => {
+    expect(validateSlackWebhookUrlValue("https://localhost")).toBe("");
+    expect(validateSlackWebhookUrlValue("http://localhost")).not.toBe("");
+    expect(validateSlackWebhookUrlValue("test")).not.toBe("");
+    expect(validateSlackWebhookUrlValue("")).not.toBe("");
+  });
 
-    test('validateSlackWebhookUrl', async () => {
-        setMockHtml(document);
-        document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
-        let isValid = validateSlackWebhookUrl();
-        expect(true).toBe(isValid);
-        expect(false).toBe(document.getElementById(DomIdList.webhookUrl).classList.contains("is-invalid"));
+  test("validateSlackWebhookUrl", async () => {
+    setMockHtml(document);
+    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
+    let isValid = validateSlackWebhookUrl();
+    expect(true).toBe(isValid);
+    expect(false).toBe(
+      document
+        .getElementById(DomIdList.webhookUrl)
+        .classList.contains("is-invalid")
+    );
 
-        setMockHtml(document);
-        document.getElementById(DomIdList.webhookUrl).value = "";
-        isValid = validateForm();
-        expect(false).toBe(isValid);
-        expect(true).toBe(document.getElementById(DomIdList.webhookUrl).classList.contains("is-invalid"));
-    });
+    setMockHtml(document);
+    document.getElementById(DomIdList.webhookUrl).value = "";
+    isValid = validateForm();
+    expect(false).toBe(isValid);
+    expect(true).toBe(
+      document
+        .getElementById(DomIdList.webhookUrl)
+        .classList.contains("is-invalid")
+    );
+  });
 
-    test('validateSlackChannelNameValue', async () => {
-        expect(validateSlackChannelNameValue('#channel')).toBe('');
-        expect(validateSlackChannelNameValue('channel')).toBe('');
-        expect(validateSlackChannelNameValue('チャンネル')).toBe('');
-        expect(validateSlackChannelNameValue('chan nel')).not.toBe('');
-        expect(validateSlackChannelNameValue('channel.')).not.toBe('');
-        expect(validateSlackChannelNameValue('channel,')).not.toBe('');
-    });
+  test("validateSlackChannelNameValue", async () => {
+    expect(validateSlackChannelNameValue("#channel")).toBe("");
+    expect(validateSlackChannelNameValue("channel")).toBe("");
+    expect(validateSlackChannelNameValue("チャンネル")).toBe("");
+    expect(validateSlackChannelNameValue("chan nel")).not.toBe("");
+    expect(validateSlackChannelNameValue("channel.")).not.toBe("");
+    expect(validateSlackChannelNameValue("channel,")).not.toBe("");
+  });
 
-    test('validateSlackChannelName', async () => {
-        setMockHtml(document);
-        document.getElementById(DomIdList.channel).value = "#webhook";
-        let isValid = validateSlackChannelName();
-        expect(true).toBe(isValid);
-        expect(false).toBe(document.getElementById(DomIdList.channel).classList.contains("is-invalid"));
+  test("validateSlackChannelName", async () => {
+    setMockHtml(document);
+    document.getElementById(DomIdList.channel).value = "#webhook";
+    let isValid = validateSlackChannelName();
+    expect(true).toBe(isValid);
+    expect(false).toBe(
+      document
+        .getElementById(DomIdList.channel)
+        .classList.contains("is-invalid")
+    );
 
-        setMockHtml(document);
-        document.getElementById(DomIdList.webhookUrl).value = "";
-        isValid = validateForm();
-        expect(false).toBe(isValid);
-        expect(true).toBe(document.getElementById(DomIdList.channel).classList.contains("is-invalid"));
-    });
+    setMockHtml(document);
+    document.getElementById(DomIdList.webhookUrl).value = "";
+    isValid = validateForm();
+    expect(false).toBe(isValid);
+    expect(true).toBe(
+      document
+        .getElementById(DomIdList.channel)
+        .classList.contains("is-invalid")
+    );
+  });
 
-    test('validateButtons', async () => {
-        setMockHtml(document);
-        document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
-        document.getElementById(DomIdList.channel).value = "#webhook";
-        validateButtons();
-        expect(document.getElementById(DomIdList.testButton).disabled).toBe(false);
-        expect(document.getElementById(DomIdList.saveButton).disabled).toBe(false);
+  test("validateButtons", async () => {
+    setMockHtml(document);
+    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
+    document.getElementById(DomIdList.channel).value = "#webhook";
+    validateButtons();
+    expect(document.getElementById(DomIdList.testButton).disabled).toBe(false);
+    expect(document.getElementById(DomIdList.saveButton).disabled).toBe(false);
 
-        document.getElementById(DomIdList.webhookUrl).value = "";
-        document.getElementById(DomIdList.channel).value = "";
-        validateButtons();
-        expect(document.getElementById(DomIdList.testButton).disabled).toBe(true);
-        expect(document.getElementById(DomIdList.saveButton).disabled).toBe(true);
-    });
-
+    document.getElementById(DomIdList.webhookUrl).value = "";
+    document.getElementById(DomIdList.channel).value = "";
+    validateButtons();
+    expect(document.getElementById(DomIdList.testButton).disabled).toBe(true);
+    expect(document.getElementById(DomIdList.saveButton).disabled).toBe(true);
+  });
 });
