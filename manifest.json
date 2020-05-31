@@ -30,5 +30,6 @@
     "128": "images/get_started128.png"
   },
   "options_page": "options.html",
+  "content_security_policy": "script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com 'unsafe-eval'; object-src 'self'",
   "manifest_version": 2
 }
