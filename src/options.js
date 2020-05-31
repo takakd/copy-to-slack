@@ -1,10 +1,24 @@
-export const DomIdList = {
-  webhookUrl: "slackWebhookUrlInput",
-  channel: "slackCannelNameInput",
-  testButton: "testButton",
-  saveButton: "saveButton",
-  webhookFeedback: "slackWebhookUrlInvalidFeedback",
-  channelFeedback: "slackCannelNameInvalidFeedback",
+import CursoredToSlack from "./cursoredtoslack";
+
+export const Const = {
+  domId: {
+    form: "optionForm",
+    webhookUrl: "slackWebhookUrlInput",
+    channel: "slackCannelNameInput",
+    testButton: "testButton",
+    saveButton: "saveButton",
+    testButtonLabel: "testButtonLabel",
+    saveButtonLabel: "saveButtonLabel",
+    webhookFeedback: "slackWebhookUrlInvalidFeedback",
+    channelFeedback: "slackCannelNameInvalidFeedback",
+  },
+  label: {
+    save: "Save",
+    saving: "Saving",
+    test: "Test",
+    testing: "Sending",
+  },
+  uiStateChangeIntervalInSec: 1,
 };
 
 /**
@@ -12,12 +26,12 @@ export const DomIdList = {
  * @returns Errors if exists.
  */
 export function getFormValues() {
-  const webhookUrlInput = document.getElementById(DomIdList.webhookUrl);
-  const channelNameInput = document.getElementById(DomIdList.channel);
+  const webhookUrlInput = document.getElementById(Const.domId.webhookUrl);
+  const channelNameInput = document.getElementById(Const.domId.channel);
 
   const result = {};
-  result[DomIdList.webhookUrl] = webhookUrlInput.value;
-  result[DomIdList.channel] = channelNameInput.value;
+  result[Const.domId.webhookUrl] = webhookUrlInput.value;
+  result[Const.domId.channel] = channelNameInput.value;
   return result;
 }
 
@@ -41,7 +55,7 @@ export function validateSlackWebhookUrlValue(value) {
   let error = "";
   if (!value) {
     error = "Enter a Slack Webhook URL for sending message.";
-  } else if (!value.match(/^https:\/\/[\w!?/+\-_~=;.,*&@#$%()'[]]+/)) {
+  } else if (!value.match(/^https:\/\/[\w!?/+\-_~=;.,*&@#$%()'[\]]+/)) {
     error = "Enter a correct URL.";
   }
   return error;
@@ -53,15 +67,15 @@ export function validateSlackWebhookUrlValue(value) {
  */
 export function validateSlackWebhookUrl() {
   const values = getFormValues();
-  const error = validateSlackWebhookUrlValue(values[DomIdList.webhookUrl]);
-  const input = document.getElementById(DomIdList.webhookUrl);
+  const error = validateSlackWebhookUrlValue(values[Const.domId.webhookUrl]);
+  const input = document.getElementById(Const.domId.webhookUrl);
   if (error) {
     input.classList.add("is-invalid");
   } else {
     input.classList.remove("is-invalid");
   }
 
-  const feedBack = document.getElementById(DomIdList.webhookFeedback);
+  const feedBack = document.getElementById(Const.domId.webhookFeedback);
   feedBack.textContent = error;
 
   return error === "";
@@ -89,15 +103,15 @@ export function validateSlackChannelNameValue(value) {
  */
 export function validateSlackChannelName() {
   const values = getFormValues();
-  const error = validateSlackChannelNameValue(values[DomIdList.channel]);
-  const input = document.getElementById(DomIdList.channel);
+  const error = validateSlackChannelNameValue(values[Const.domId.channel]);
+  const input = document.getElementById(Const.domId.channel);
   if (error) {
     input.classList.add("is-invalid");
   } else {
     input.classList.remove("is-invalid");
   }
 
-  const feedBack = document.getElementById(DomIdList.channelFeedback);
+  const feedBack = document.getElementById(Const.domId.channelFeedback);
   feedBack.textContent = error;
 
   return error === "";
@@ -109,21 +123,52 @@ export function validateSlackChannelName() {
 export function validateButtons() {
   const values = getFormValues();
   const isValid =
-    validateSlackWebhookUrlValue(values[DomIdList.webhookUrl]) === "" &&
-    validateSlackChannelNameValue(values[DomIdList.channel]) === "";
+    validateSlackWebhookUrlValue(values[Const.domId.webhookUrl]) === "" &&
+    validateSlackChannelNameValue(values[Const.domId.channel]) === "";
+  setButtonUiState(
+    Const.domId.testButton,
+    Const.domId.testButtonLabelst,
+    isValid ? 2 : 1,
+    ""
+  );
+  setButtonUiState(
+    Const.domId.saveButton,
+    Const.domId.saveButtonLabele,
+    isValid ? 2 : 1,
+    ""
+  );
+}
 
-  const testButton = document.getElementById(DomIdList.testButton);
-  testButton.disabled = !isValid;
-
-  const saveButton = document.getElementById(DomIdList.saveButton);
-  saveButton.disabled = !isValid;
+/**
+ * Set a button UI sate.
+ * @param {string} buttonId UI id.
+ * @param {string} labelId UI id.
+ * @param {number} state 1:disabled 2:enabled 3:running
+ * @param {string} label Button label.
+ */
+export function setButtonUiState(buttonId, labelId, state, label) {
+  const button = document.getElementById(buttonId);
+  const buttonLabel = document.getElementById(labelId);
+  if (buttonLabel) {
+    buttonLabel.textContent = label;
+  }
+  if (state === 1) {
+    button.classList.remove("running");
+    button.disabled = true;
+  } else if (state === 2) {
+    button.classList.remove("running");
+    button.disabled = false;
+  } else if (state === 3) {
+    button.classList.add("running");
+    button.disabled = false;
+  }
 }
 
 /**
  * construct options js.
  */
 export function constructOptions() {
-  const webhookInput = document.getElementById(DomIdList.webhookUrl);
+  const webhookInput = document.getElementById(Const.domId.webhookUrl);
   if (webhookInput) {
     webhookInput.addEventListener("blur", () => {
       validateSlackWebhookUrl();
@@ -131,7 +176,7 @@ export function constructOptions() {
     });
   }
 
-  const channelInput = document.getElementById(DomIdList.channel);
+  const channelInput = document.getElementById(Const.domId.channel);
   if (channelInput) {
     channelInput.addEventListener("blur", () => {
       validateSlackChannelName();
@@ -139,7 +184,7 @@ export function constructOptions() {
     });
   }
 
-  const testButton = document.getElementById(DomIdList.testButton);
+  const testButton = document.getElementById(Const.domId.testButton);
   if (testButton) {
     testButton.addEventListener("click", () => {
       const isValid = validateForm();
@@ -147,32 +192,81 @@ export function constructOptions() {
         return;
       }
 
-      // TODO: send to slack
-      console.log(
-        "send to slack",
-        "test message from Cursored to Slack Chrome Extension."
+      setButtonUiState(
+        Const.domId.testButton,
+        Const.domId.testButtonLabel,
+        3,
+        Const.label.testing
       );
+      setTimeout(() => {
+        // TODO: send to slack
+        console.log(
+          "send to slack",
+          "test message from Cursored to Slack Chrome Extension."
+        );
+
+        setButtonUiState(
+          Const.domId.testButton,
+          Const.domId.testButtonLabel,
+          2,
+          Const.label.test
+        );
+      }, Const.uiStateChangeIntervalInSec * 1000);
     });
   }
 
-  const saveButon = document.getElementById(DomIdList.saveButton);
-  if (saveButon) {
-    saveButon.addEventListener("click", () => {
+  const form = document.getElementById(Const.domId.form);
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
       const isValid = validateForm();
       if (!isValid) {
         return;
       }
 
-      // TODO: send to slack
-      console.log(
-        "send to slack",
-        "message from Cursored to Slack Chrome Extension."
+      setButtonUiState(
+        Const.domId.saveButton,
+        Const.domId.saveButtonLabel,
+        3,
+        Const.label.saving
       );
+      setTimeout(() => {
+        const cts = new CursoredToSlack(chrome);
+        const values = getFormValues();
+        cts.setOptions(values).then(() => {
+          console.log("done: save", values);
+          setButtonUiState(
+            Const.domId.saveButton,
+            Const.domId.saveButtonLabel,
+            2,
+            Const.label.save
+          );
+        });
+      }, Const.uiStateChangeIntervalInSec * 1000);
     });
   }
 
-  // initial check.
-  validateButtons();
+  // initialize.
+  const cts = new CursoredToSlack(chrome);
+  cts.getOptions().then((options) => {
+    let isValid;
+
+    isValid =
+      validateSlackWebhookUrlValue(options[Const.domId.webhookUrl]) === "";
+    if (isValid) {
+      document.getElementById(Const.domId.webhookUrl).value =
+        options[Const.domId.webhookUrl];
+    }
+    isValid =
+      validateSlackChannelNameValue(options[Const.domId.channel]) === "";
+    if (isValid) {
+      document.getElementById(Const.domId.channel).value =
+        options[Const.domId.channel];
+    }
+    validateButtons();
+  });
 }
 
 const isCalledChrome =
@@ -180,22 +274,3 @@ const isCalledChrome =
 if (isCalledChrome) {
   constructOptions();
 }
-
-// sample:
-// let page = document.getElementById('buttonDiv');
-// const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
-//
-// function constructOptions(kButtonColors) {
-//     for (let item of kButtonColors) {
-//         let button = document.createElement('button');
-//         button.style.backgroundColor = item;
-//         button.addEventListener('click', function () {
-//             chrome.storage.sync.set({color: item}, function () {
-//                 console.log('color is ' + item);
-//             })
-//         });
-//         page.appendChild(button);
-//     }
-// }
-//
-// constructOptions(kButtonColors);

@@ -1,6 +1,7 @@
 import {
-  DomIdList,
+  Const,
   getFormValues,
+  setButtonUiState,
   validateButtons,
   validateForm,
   validateSlackChannelName,
@@ -39,88 +40,94 @@ const setMockHtml = (document) => {
             </div>
         </div>
         <div class="button-group mt-4">
-            <button id="testButton" type="button" class="btn btn-outline-secondary mr-2">Test</button>
-            <button id="saveButton" type="submit" class="btn btn-primary">Save</button>
+          <button id="testButton" type="button" class="btn btn-outline-secondary ld-ext-right mr-2">
+            <span id="testButtonLabel">Test</span>
+            <div class="ld ld-ring ld-spin"></div>
+          </button>
+          <button id="saveButton" type="submit" class="btn btn-primary ld-ext-right">
+            <span id="saveButtonLabel">Save</span>
+            <div class="ld ld-ring ld-spin"></div>
+          </button>
         </div>
     </form>    
     `;
   return document;
 };
 describe("options", () => {
-  test("getFormValues", async () => {
+  test("getFormValues", () => {
     setMockHtml(document);
-    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
-    document.getElementById(DomIdList.channel).value = "#webhook";
+    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
+    document.getElementById(Const.domId.channel).value = "#webhook";
 
     const got = getFormValues();
-    expect(got[DomIdList.webhookUrl]).toBe("https://localhost");
-    expect(got[DomIdList.channel]).toBe("#webhook");
+    expect(got[Const.domId.webhookUrl]).toBe("https://localhost");
+    expect(got[Const.domId.channel]).toBe("#webhook");
   });
 
-  test("validateForm", async () => {
+  test("validateForm", () => {
     setMockHtml(document);
-    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
-    document.getElementById(DomIdList.channel).value = "#webhook";
+    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
+    document.getElementById(Const.domId.channel).value = "#webhook";
     let isValid = validateForm();
     expect(true).toBe(isValid);
     expect(false).toBe(
       document
-        .getElementById(DomIdList.webhookUrl)
+        .getElementById(Const.domId.webhookUrl)
         .classList.contains("is-invalid")
     );
     expect(false).toBe(
       document
-        .getElementById(DomIdList.webhookUrl)
+        .getElementById(Const.domId.webhookUrl)
         .classList.contains("is-invalid")
     );
 
     setMockHtml(document);
-    document.getElementById(DomIdList.webhookUrl).value = "";
-    document.getElementById(DomIdList.channel).value = "";
+    document.getElementById(Const.domId.webhookUrl).value = "";
+    document.getElementById(Const.domId.channel).value = "";
     isValid = validateForm();
     expect(false).toBe(isValid);
     expect(true).toBe(
       document
-        .getElementById(DomIdList.webhookUrl)
+        .getElementById(Const.domId.webhookUrl)
         .classList.contains("is-invalid")
     );
     expect(true).toBe(
       document
-        .getElementById(DomIdList.webhookUrl)
+        .getElementById(Const.domId.webhookUrl)
         .classList.contains("is-invalid")
     );
   });
 
-  test("validateSlackWebhookUrlValue", async () => {
+  test("validateSlackWebhookUrlValue", () => {
     expect(validateSlackWebhookUrlValue("https://localhost")).toBe("");
     expect(validateSlackWebhookUrlValue("http://localhost")).not.toBe("");
     expect(validateSlackWebhookUrlValue("test")).not.toBe("");
     expect(validateSlackWebhookUrlValue("")).not.toBe("");
   });
 
-  test("validateSlackWebhookUrl", async () => {
+  test("validateSlackWebhookUrl", () => {
     setMockHtml(document);
-    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
+    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
     let isValid = validateSlackWebhookUrl();
     expect(true).toBe(isValid);
     expect(false).toBe(
       document
-        .getElementById(DomIdList.webhookUrl)
+        .getElementById(Const.domId.webhookUrl)
         .classList.contains("is-invalid")
     );
 
     setMockHtml(document);
-    document.getElementById(DomIdList.webhookUrl).value = "";
+    document.getElementById(Const.domId.webhookUrl).value = "";
     isValid = validateForm();
     expect(false).toBe(isValid);
     expect(true).toBe(
       document
-        .getElementById(DomIdList.webhookUrl)
+        .getElementById(Const.domId.webhookUrl)
         .classList.contains("is-invalid")
     );
   });
 
-  test("validateSlackChannelNameValue", async () => {
+  test("validateSlackChannelNameValue", () => {
     expect(validateSlackChannelNameValue("#channel")).toBe("");
     expect(validateSlackChannelNameValue("channel")).toBe("");
     expect(validateSlackChannelNameValue("チャンネル")).toBe("");
@@ -129,40 +136,89 @@ describe("options", () => {
     expect(validateSlackChannelNameValue("channel,")).not.toBe("");
   });
 
-  test("validateSlackChannelName", async () => {
+  test("validateSlackChannelName", () => {
     setMockHtml(document);
-    document.getElementById(DomIdList.channel).value = "#webhook";
+    document.getElementById(Const.domId.channel).value = "#webhook";
     let isValid = validateSlackChannelName();
     expect(true).toBe(isValid);
     expect(false).toBe(
       document
-        .getElementById(DomIdList.channel)
+        .getElementById(Const.domId.channel)
         .classList.contains("is-invalid")
     );
 
     setMockHtml(document);
-    document.getElementById(DomIdList.webhookUrl).value = "";
+    document.getElementById(Const.domId.webhookUrl).value = "";
     isValid = validateForm();
     expect(false).toBe(isValid);
     expect(true).toBe(
       document
-        .getElementById(DomIdList.channel)
+        .getElementById(Const.domId.channel)
         .classList.contains("is-invalid")
     );
   });
 
-  test("validateButtons", async () => {
+  test("validateButtons", () => {
     setMockHtml(document);
-    document.getElementById(DomIdList.webhookUrl).value = "https://localhost";
-    document.getElementById(DomIdList.channel).value = "#webhook";
-    validateButtons();
-    expect(document.getElementById(DomIdList.testButton).disabled).toBe(false);
-    expect(document.getElementById(DomIdList.saveButton).disabled).toBe(false);
 
-    document.getElementById(DomIdList.webhookUrl).value = "";
-    document.getElementById(DomIdList.channel).value = "";
+    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
+    document.getElementById(Const.domId.channel).value = "#webhook";
     validateButtons();
-    expect(document.getElementById(DomIdList.testButton).disabled).toBe(true);
-    expect(document.getElementById(DomIdList.saveButton).disabled).toBe(true);
+    expect(document.getElementById(Const.domId.testButton).disabled).toBe(
+      false
+    );
+    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(
+      false
+    );
+
+    document.getElementById(Const.domId.webhookUrl).value = "";
+    document.getElementById(Const.domId.channel).value = "";
+    validateButtons();
+    expect(document.getElementById(Const.domId.testButton).disabled).toBe(true);
+    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(true);
+  });
+
+  test("setButtonUiState", () => {
+    setMockHtml(document);
+
+    setButtonUiState(
+      Const.domId.saveButton,
+      Const.domId.saveButtonLabel,
+      1,
+      "Save"
+    );
+    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(true);
+
+    setButtonUiState(
+      Const.domId.saveButton,
+      Const.domId.saveButtonLabel,
+      2,
+      "Save"
+    );
+    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(
+      false
+    );
+
+    setButtonUiState(
+      Const.domId.saveButton,
+      Const.domId.saveButtonLabel,
+      3,
+      "Save"
+    );
+    expect(
+      document
+        .getElementById(Const.domId.saveButton)
+        .classList.contains("running")
+    ).toBe(true);
+
+    setButtonUiState(
+      Const.domId.saveButton,
+      Const.domId.saveButtonLabel,
+      1,
+      "Done"
+    );
+    expect(
+      document.getElementById(Const.domId.saveButtonLabel).textContent
+    ).toBe("Done");
   });
 });
