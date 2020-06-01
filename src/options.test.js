@@ -1,6 +1,6 @@
 import {
   Const,
-  getFormValues,
+  getOptionFromForm,
   setButtonUiState,
   validateButtons,
   validateForm,
@@ -40,12 +40,12 @@ const setMockHtml = (document) => {
   return document;
 };
 describe("options", () => {
-  test("getFormValues", () => {
+  test("getOptionFromForm", () => {
     setMockHtml(document);
     document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
 
-    const got = getFormValues();
-    expect(got[Const.domId.webhookUrl]).toBe("https://localhost");
+    const got = getOptionFromForm();
+    expect(got.webhookUrl).toBe("https://localhost");
   });
 
   test("validateForm", () => {

@@ -1,4 +1,5 @@
 import CursoredToSlack from "./cursoredtoslack";
+import CursoredToSlackOption from "./cursoredtoslack-option";
 
 export const Const = {
   domId: {
@@ -21,14 +22,15 @@ export const Const = {
 
 /**
  * Get form values.
- * @returns Errors if exists.
+ * @returns CursoredToSlackOption
  */
-export function getFormValues() {
+export function getOptionFromForm() {
   const webhookUrlInput = document.getElementById(Const.domId.webhookUrl);
 
-  const result = {};
-  result[Const.domId.webhookUrl] = webhookUrlInput.value;
-  return result;
+  const option = new CursoredToSlackOption();
+  option.webhookUrl = webhookUrlInput.value;
+
+  return option;
 }
 
 /**
@@ -61,28 +63,31 @@ export function validateSlackWebhookUrlValue(value) {
  * @returns {boolean} Returns true if valid, false otherwise.
  */
 export function validateSlackWebhookUrl() {
-  const values = getFormValues();
-  const error = validateSlackWebhookUrlValue(values[Const.domId.webhookUrl]);
+  const option = getOptionFromForm();
+  const errors = option.validate();
   const input = document.getElementById(Const.domId.webhookUrl);
-  if (error) {
+  if (errors["webhookUrl"]) {
     input.classList.add("is-invalid");
   } else {
     input.classList.remove("is-invalid");
   }
 
-  const feedBack = document.getElementById(Const.domId.webhookFeedback);
-  feedBack.textContent = error;
+  if (errors["webhookUrl"]) {
+    const feedBack = document.getElementById(Const.domId.webhookFeedback);
+    feedBack.textContent = errors["webhookUrl"];
+  }
 
-  return error === "";
+  return typeof errors["webhookUrl"] === "undefined";
 }
 
 /**
  * Validate Button UIs.
  */
 export function validateButtons() {
-  const values = getFormValues();
-  const isValid =
-    validateSlackWebhookUrlValue(values[Const.domId.webhookUrl]) === "";
+  const option = getOptionFromForm();
+  const errors = option.validate();
+  const isValid = typeof errors["webhookUrl"] === "undefined";
+
   setButtonUiState(
     Const.domId.testButton,
     Const.domId.testButtonLabelst,
@@ -184,9 +189,9 @@ export function constructOptions() {
       );
       setTimeout(() => {
         const cts = new CursoredToSlack(chrome);
-        const values = getFormValues();
-        cts.setOptions(values).then(() => {
-          console.log("done: save", values);
+        const option = getOptionFromForm();
+        cts.setOptions(option).then(() => {
+          console.log("done: save", option);
           setButtonUiState(
             Const.domId.saveButton,
             Const.domId.saveButtonLabel,

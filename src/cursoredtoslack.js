@@ -1,5 +1,7 @@
 "use strict";
 
+import CursoredToSlackOption from "./cursoredtoslack-option";
+
 /**
  * Persistence options key.
  * @type {string}
@@ -42,7 +44,11 @@ export default class CursoredToSlack {
    * @return {Promise} returns bool if it resolved.
    */
   async setOptions(value) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (value instanceof CursoredToSlackOption === false) {
+        reject("wrong instanceof");
+        return;
+      }
       this.chrome.storage.sync.set({ [OptionsKey]: value }, () => {
         resolve(true);
       });

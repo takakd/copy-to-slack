@@ -1,4 +1,5 @@
 import CursoredToSlack from "./cursoredtoslack";
+import CursoredToSlackOption from "./cursoredtoslack-option";
 
 const mockOptions = {
   storage: {
@@ -17,13 +18,23 @@ const mockOptions = {
 describe("options", () => {
   test("get/set", async () => {
     const c = new CursoredToSlack(mockOptions);
-    const options = { test: "hi", sub: { test: "hello" } };
+    let done, options;
 
-    const done = await c.setOptions(options);
+    options = { test: "hi", sub: { test: "hello" } };
+    done = await c.setOptions(options).catch((error) => {
+      return error;
+    });
+    expect(done).toBe("wrong instanceof");
+
+    options = new CursoredToSlackOption();
+    options.webhookUrl = "https://localhost";
+    done = await c.setOptions(options).catch((error) => {
+      return error;
+    });
     expect(done).toBe(true);
 
     const got = await c.getOptions();
-    expect(got).toMatchObject(options);
+    expect(got.webhookUrl).toBe("https://localhost");
   });
 });
 
