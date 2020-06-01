@@ -4,13 +4,11 @@ export const Const = {
   domId: {
     form: "optionForm",
     webhookUrl: "slackWebhookUrlInput",
-    channel: "slackCannelNameInput",
     testButton: "testButton",
     saveButton: "saveButton",
     testButtonLabel: "testButtonLabel",
     saveButtonLabel: "saveButtonLabel",
     webhookFeedback: "slackWebhookUrlInvalidFeedback",
-    channelFeedback: "slackCannelNameInvalidFeedback",
   },
   label: {
     save: "Save",
@@ -27,11 +25,9 @@ export const Const = {
  */
 export function getFormValues() {
   const webhookUrlInput = document.getElementById(Const.domId.webhookUrl);
-  const channelNameInput = document.getElementById(Const.domId.channel);
 
   const result = {};
   result[Const.domId.webhookUrl] = webhookUrlInput.value;
-  result[Const.domId.channel] = channelNameInput.value;
   return result;
 }
 
@@ -41,9 +37,8 @@ export function getFormValues() {
  */
 export function validateForm() {
   const validUrl = validateSlackWebhookUrl();
-  const validChannel = validateSlackChannelName();
   validateButtons();
-  return validUrl && validChannel;
+  return validUrl;
 }
 
 /**
@@ -82,49 +77,12 @@ export function validateSlackWebhookUrl() {
 }
 
 /**
- * Validate channel.
- * We cannot use space, dot, camma as of 2020/5/31
- * @params {string} value.
- * @returns {string} Returns error string if not valid, empty otherwise.
- */
-export function validateSlackChannelNameValue(value) {
-  let error = "";
-  if (!value) {
-    error = "Enter a Slack Channel Name for sending message.";
-  } else if (value.match(/[ .,]+/)) {
-    error = "Enter a valid channel name, cannot use space, dot and camma.";
-  }
-  return error;
-}
-
-/**
- * Validate channel, and upadte UI state.
- * @returns {boolean} Returns true if valid, false otherwise.
- */
-export function validateSlackChannelName() {
-  const values = getFormValues();
-  const error = validateSlackChannelNameValue(values[Const.domId.channel]);
-  const input = document.getElementById(Const.domId.channel);
-  if (error) {
-    input.classList.add("is-invalid");
-  } else {
-    input.classList.remove("is-invalid");
-  }
-
-  const feedBack = document.getElementById(Const.domId.channelFeedback);
-  feedBack.textContent = error;
-
-  return error === "";
-}
-
-/**
  * Validate Button UIs.
  */
 export function validateButtons() {
   const values = getFormValues();
   const isValid =
-    validateSlackWebhookUrlValue(values[Const.domId.webhookUrl]) === "" &&
-    validateSlackChannelNameValue(values[Const.domId.channel]) === "";
+    validateSlackWebhookUrlValue(values[Const.domId.webhookUrl]) === "";
   setButtonUiState(
     Const.domId.testButton,
     Const.domId.testButtonLabelst,
@@ -172,14 +130,6 @@ export function constructOptions() {
   if (webhookInput) {
     webhookInput.addEventListener("blur", () => {
       validateSlackWebhookUrl();
-      validateButtons();
-    });
-  }
-
-  const channelInput = document.getElementById(Const.domId.channel);
-  if (channelInput) {
-    channelInput.addEventListener("blur", () => {
-      validateSlackChannelName();
       validateButtons();
     });
   }
@@ -258,12 +208,6 @@ export function constructOptions() {
     if (isValid) {
       document.getElementById(Const.domId.webhookUrl).value =
         options[Const.domId.webhookUrl];
-    }
-    isValid =
-      validateSlackChannelNameValue(options[Const.domId.channel]) === "";
-    if (isValid) {
-      document.getElementById(Const.domId.channel).value =
-        options[Const.domId.channel];
     }
     validateButtons();
   });
