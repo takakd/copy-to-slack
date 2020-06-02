@@ -13,6 +13,9 @@ export const Const = {
     webhookMaskButton: "toggleWebhoookUrlMaskButton",
     webhookIconMask: "toggleWebhoookUrlMaskButtonMask",
     webhookIconUnMask: "toggleWebhoookUrlMaskButtonUnMask",
+    testAlert: "collapseTestErrorAlert",
+    testDetail: "collapseTestErrorDetail",
+    testAlertTemplate: "collapseTestErrorAlertTemplate",
   },
   label: {
     save: "Save",
@@ -154,7 +157,6 @@ export function maskWebhookUrlInputValue(isMask) {
 
 /**
  * Toggle Webhook URL Mask Icon visible state.
- * @param {boolean} isMask Mask URL if it's true, Unmask otherwise.
  */
 export function toggleWebhookUrlInputMask() {
   const maskIcon = document.getElementById(Const.domId.webhookIconMask);
@@ -162,6 +164,39 @@ export function toggleWebhookUrlInputMask() {
     Const.class.hideWebhookMaskIcon
   );
   maskWebhookUrlInputValue(isMaskNext);
+}
+
+/**
+ * Show test sending error alert.
+ * @param {boolean} isShow Show the alert if it's true, hide otherwise.
+ */
+export function showTestSendingErrorAlert(isShow) {
+  if (isShow) {
+    const template = document.getElementById(Const.domId.testAlertTemplate);
+    const alertBlock = template.cloneNode(true);
+    const alert = alertBlock.getElementsByClassName("alert");
+    const alertLink = alertBlock.getElementsByClassName("alert-link");
+    const alertCollapse = alertBlock.getElementsByClassName("collapse");
+    console.log(alert);
+    alert[0].id = Const.domId.testAlert;
+    alertLink[0].setAttribute("href", "#" + Const.domId.testDetail);
+    alertCollapse[0].id = Const.domId.testDetail;
+    template.before(alert[0]);
+    template.before(alertCollapse[0]);
+
+    $("#" + Const.domId.testAlert).on("close.bs.alert", () => {
+      document.getElementById(Const.domId.testDetail).remove();
+    });
+  } else {
+    const alert = document.getElementById(Const.domId.testAlert);
+    if (alert) {
+      alert.remove();
+    }
+    const detail = document.getElementById(Const.domId.testDetail);
+    if (detail) {
+      detail.remove();
+    }
+  }
 }
 
 /**
@@ -184,6 +219,8 @@ export function constructOptions() {
         return;
       }
 
+      showTestSendingErrorAlert(false);
+
       setButtonUiState(
         Const.domId.testButton,
         Const.domId.testButtonLabel,
@@ -192,8 +229,12 @@ export function constructOptions() {
       );
       setTimeout(async () => {
         const cts = new CursoredToSlack(chrome);
-        const result = await cts.sendRequestToSlackApi("test message.");
-        console.log(result);
+        const result = await cts
+          .sendRequestToSlackApi("test message.")
+          .catch((error) => error);
+
+        const failed = result instanceof Error;
+        showTestSendingErrorAlert(failed);
 
         setButtonUiState(
           Const.domId.testButton,
@@ -242,6 +283,15 @@ export function constructOptions() {
   if (maskButton) {
     maskButton.addEventListener("click", () => {
       toggleWebhookUrlInputMask();
+    });
+  }
+
+  const alert = document.getElementById(Const.domId.testAlert);
+  if (alert) {
+    alert.addEventListener("closed.bs.alert", () => {
+      document.getElementById(Const.domId.testDetail).collapse({
+        toggle: false,
+      });
     });
   }
 
