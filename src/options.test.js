@@ -1,7 +1,9 @@
 import {
   Const,
   getOptionFromForm,
+  maskWebhookUrlInputValue,
   setButtonUiState,
+  toggleWebhookUrlInputMask,
   validateButtons,
   validateForm,
   validateSlackWebhookUrl,
@@ -16,14 +18,20 @@ const setMockHtml = (document) => {
     <form class="mt-4">
         <div class="form-group">
             <label for="slackWebhookUrlInput">Slack Webhook URL</label>
-            <input type="url" class="form-control" id="slackWebhookUrlInput" aria-describedby="slackWebhookHelp">
+            <div>
+              <button id="toggleWebhoookUrlMaskButton" type="button">
+                <span id="toggleWebhoookUrlMaskButtonUnMask" class="toggleWebhookUrlMaskIcon toggleWebhookUrlMaskIcon-hide">&#x1f649;</span>
+                <span id="toggleWebhoookUrlMaskButtonMask" class="toggleWebhookUrlMaskIcon">&#x1f648;</span>
+              </button>            
+              <input type="password" class="form-control" id="slackWebhookUrlInput" aria-describedby="slackWebhookHelp">
+              <div class="valid-feedback">
+                  OK.
+              </div>
+              <div class="invalid-feedback" id="slackWebhookUrlInvalidFeedback">
+                  Please provide Slack Webhook URL.
+              </div>
+            </div>
             <small id="slackWebhookHelp" class="form-text text-muted">Input Slack Webhook URL of Slack team.</small>
-            <div class="valid-feedback">
-                OK.
-            </div>
-            <div class="invalid-feedback" id="slackWebhookUrlInvalidFeedback">
-                Please provide Slack Webhook URL.
-            </div>
         </div>
         <div class="button-group mt-4">
           <button id="testButton" type="button" class="btn btn-outline-secondary ld-ext-right mr-2">
@@ -169,5 +177,64 @@ describe("options", () => {
     expect(
       document.getElementById(Const.domId.saveButtonLabel).textContent
     ).toBe("Done");
+  });
+
+  test("maskWebhookUrlInputValue", () => {
+    setMockHtml(document);
+    let mask, Unmask, input;
+
+    maskWebhookUrlInputValue(true);
+    mask = document.getElementById(Const.domId.webhookIconMask);
+    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
+    input = document.getElementById(Const.domId.webhookUrl);
+    expect(mask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(
+      false
+    );
+    expect(Unmask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(
+      true
+    );
+    expect(input.getAttribute("type")).toBe("password");
+
+    maskWebhookUrlInputValue(false);
+    mask = document.getElementById(Const.domId.webhookIconMask);
+    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
+    input = document.getElementById(Const.domId.webhookUrl);
+    expect(mask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(true);
+    expect(Unmask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(
+      false
+    );
+    expect(input.getAttribute("type")).toBe("text");
+  });
+
+  test("toggleWebhookUrlInputMask", () => {
+    setMockHtml(document);
+    let mask, Unmask, input;
+
+    // set initial state.
+    maskWebhookUrlInputValue(true);
+
+    // to unmask.
+    toggleWebhookUrlInputMask();
+    mask = document.getElementById(Const.domId.webhookIconMask);
+    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
+    input = document.getElementById(Const.domId.webhookUrl);
+    expect(mask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(true);
+    expect(Unmask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(
+      false
+    );
+    expect(input.getAttribute("type")).toBe("text");
+
+    // to mask.
+    toggleWebhookUrlInputMask();
+    mask = document.getElementById(Const.domId.webhookIconMask);
+    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
+    input = document.getElementById(Const.domId.webhookUrl);
+    expect(mask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(
+      false
+    );
+    expect(Unmask.classList.contains(Const.class.hideWebhookMaskIcon)).toBe(
+      true
+    );
+    expect(input.getAttribute("type")).toBe("password");
   });
 });

@@ -1,0 +1,23 @@
+#toggleWebhoookUrlMaskButton {
+  background: none;
+  border:none;
+  display: block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  height: 1.5rem;
+  margin: 7px 2.2rem -31px 0px;
+  float: right;
+}
+.toggleWebhookUrlMaskIcon {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-size: 1.5rem;
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.toggleWebhookUrlMaskIcon-hide {
+  display: none;
+}

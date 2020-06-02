@@ -8,6 +8,7 @@
   />
   <link rel="stylesheet" type="text/css"
         href="https://cdn.jsdelivr.net/gh/loadingio/loading.css@v2.0.0/dist/loading.min.css"/>
+  <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 <body>
 <div class="container">
@@ -15,15 +16,22 @@
   <form id="optionForm" class="mt-4">
     <div class="form-group">
       <label for="slackWebhookUrlInput">Slack Webhook URL</label>
-      <input type="url" class="form-control" id="slackWebhookUrlInput" aria-describedby="slackWebhookHelp">
-      <small id="slackWebhookHelp" class="form-text text-muted">Provide Slack Webhook URL of your Slack team.</small>
-      <div class="valid-feedback">
-        OK.
+      <div>
+        <button id="toggleWebhoookUrlMaskButton" type="button">
+          <span id="toggleWebhoookUrlMaskButtonUnMask" class="toggleWebhookUrlMaskIcon toggleWebhookUrlMaskIcon-hide">&#x1f649;</span>
+          <span id="toggleWebhoookUrlMaskButtonMask" class="toggleWebhookUrlMaskIcon">&#x1f648;</span>
+        </button>
+        <input type="password" class="form-control" id="slackWebhookUrlInput" aria-describedby="slackWebhookHelp">
+        <div class="valid-feedback">
+          OK.
+        </div>
+        <div class="invalid-feedback" id="slackWebhookUrlInvalidFeedback">
+          Please provide Slack Webhook URL.
+        </div>
       </div>
-      <div class="invalid-feedback" id="slackWebhookUrlInvalidFeedback">
-        Please provide Slack Webhook URL.
-      </div>
+      <small id="slackWebhookHelp" class="form-text text-muted">Provide Slack Webhook URL of your Slack team. <a href="https://api.slack.com/messaging/webhooks" target="_blank">Here to get it.</a></small>
     </div>
+
     <div class="button-group mt-4">
       <button id="testButton" type="button" class="btn btn-outline-secondary ld-ext-right mr-2">
         <span id="testButtonLabel">Test</span>

@@ -10,12 +10,18 @@ export const Const = {
     testButtonLabel: "testButtonLabel",
     saveButtonLabel: "saveButtonLabel",
     webhookFeedback: "slackWebhookUrlInvalidFeedback",
+    webhookMaskButton: "toggleWebhoookUrlMaskButton",
+    webhookIconMask: "toggleWebhoookUrlMaskButtonMask",
+    webhookIconUnMask: "toggleWebhoookUrlMaskButtonUnMask",
   },
   label: {
     save: "Save",
     saving: "Saving",
     test: "Test",
     testing: "Sending",
+  },
+  class: {
+    hideWebhookMaskIcon: "toggleWebhookUrlMaskIcon-hide",
   },
   uiStateChangeIntervalInSec: 1,
 };
@@ -128,6 +134,37 @@ export function setButtonUiState(buttonId, labelId, state, label) {
 }
 
 /**
+ * Change Webhook URL Mask Icon visible state.
+ * @param {boolean} isMask Mask URL if it's true, Unmask otherwise.
+ */
+export function maskWebhookUrlInputValue(isMask) {
+  const input = document.getElementById(Const.domId.webhookUrl);
+  const iconMask = document.getElementById(Const.domId.webhookIconMask);
+  const iconUnMask = document.getElementById(Const.domId.webhookIconUnMask);
+  if (isMask) {
+    input.setAttribute("type", "password");
+    iconMask.classList.remove(Const.class.hideWebhookMaskIcon);
+    iconUnMask.classList.add(Const.class.hideWebhookMaskIcon);
+  } else {
+    input.setAttribute("type", "text");
+    iconMask.classList.add(Const.class.hideWebhookMaskIcon);
+    iconUnMask.classList.remove(Const.class.hideWebhookMaskIcon);
+  }
+}
+
+/**
+ * Toggle Webhook URL Mask Icon visible state.
+ * @param {boolean} isMask Mask URL if it's true, Unmask otherwise.
+ */
+export function toggleWebhookUrlInputMask() {
+  const maskIcon = document.getElementById(Const.domId.webhookIconMask);
+  const isMaskNext = maskIcon.classList.contains(
+    Const.class.hideWebhookMaskIcon
+  );
+  maskWebhookUrlInputValue(isMaskNext);
+}
+
+/**
  * construct options js.
  */
 export function constructOptions() {
@@ -201,6 +238,13 @@ export function constructOptions() {
     });
   }
 
+  const maskButton = document.getElementById(Const.domId.webhookMaskButton);
+  if (maskButton) {
+    maskButton.addEventListener("click", () => {
+      toggleWebhookUrlInputMask();
+    });
+  }
+
   // initialize.
   const cts = new CursoredToSlack(chrome);
   cts.getOptions().then((options) => {
@@ -210,6 +254,8 @@ export function constructOptions() {
         options.webhookUrl;
     }
     validateButtons();
+
+    maskWebhookUrlInputValue(true);
   });
 }
 
