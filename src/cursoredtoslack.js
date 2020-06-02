@@ -33,7 +33,8 @@ export default class CursoredToSlack {
   async getOptions() {
     return new Promise((resolve) => {
       this.chrome.storage.sync.get([OptionsKey], (result) => {
-        resolve(result[OptionsKey]);
+        const value = new CursoredToSlackOption(result[OptionsKey]);
+        resolve(value);
       });
     });
   }
@@ -107,5 +108,29 @@ export default class CursoredToSlack {
       contexts: contexts,
       visible: true,
     });
+  }
+
+  /**
+   * Send request to Slack API.
+   * @param {string} text Properties of post body.
+   */
+  async sendRequestToSlackApi(text) {
+    const option = await this.getOptions();
+
+    // build data
+    const body = { text: text };
+
+    return await fetch(option.webhookUrl, {
+      method: "POST",
+      cache: "no-cache",
+      headers: {
+        // NOTE: Slack Webhook does not support preflight.
+        // https://api.slack.com/web
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.text())
+      .then((body) => body);
   }
 }

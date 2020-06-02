@@ -7,25 +7,14 @@ export default class CursoredToSlackOption {
    * Represents a options in extension.
    * @constructor
    */
-  constructor() {
-    this._webhookUrl = "";
-  }
+  constructor(values) {
+    this.webhookUrl = "";
 
-  /**
-   * Slack Webhook URL
-   * @returns {string|*}
-   */
-  get webhookUrl() {
-    return this._webhookUrl;
-  }
-
-  /**
-   *
-   * Slack Webhook URL
-   * @param value
-   */
-  set webhookUrl(value) {
-    this._webhookUrl = value;
+    if (typeof values === "object") {
+      if (values["webhookUrl"]) {
+        this.webhookUrl = values["webhookUrl"];
+      }
+    }
   }
 
   /**

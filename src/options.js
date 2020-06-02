@@ -153,12 +153,10 @@ export function constructOptions() {
         3,
         Const.label.testing
       );
-      setTimeout(() => {
-        // TODO: send to slack
-        console.log(
-          "send to slack",
-          "test message from Cursored to Slack Chrome Extension."
-        );
+      setTimeout(async () => {
+        const cts = new CursoredToSlack(chrome);
+        const result = await cts.sendRequestToSlackApi("test message.");
+        console.log(result);
 
         setButtonUiState(
           Const.domId.testButton,
@@ -206,13 +204,10 @@ export function constructOptions() {
   // initialize.
   const cts = new CursoredToSlack(chrome);
   cts.getOptions().then((options) => {
-    let isValid;
-
-    isValid =
-      validateSlackWebhookUrlValue(options[Const.domId.webhookUrl]) === "";
+    const isValid = validateSlackWebhookUrlValue(options.webhookUrl) === "";
     if (isValid) {
       document.getElementById(Const.domId.webhookUrl).value =
-        options[Const.domId.webhookUrl];
+        options.webhookUrl;
     }
     validateButtons();
   });

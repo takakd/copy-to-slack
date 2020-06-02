@@ -18,13 +18,18 @@ const mockOptions = {
 describe("options", () => {
   test("get/set", async () => {
     const c = new CursoredToSlack(mockOptions);
-    let done, options;
+    let done, options, got;
 
     options = { test: "hi", sub: { test: "hello" } };
     done = await c.setOptions(options).catch((error) => {
       return error;
     });
     expect(done).toBe("wrong instanceof");
+
+    got = await c.getOptions().catch((error) => {
+      return error;
+    });
+    expect(got.webhookUrl).toBe("");
 
     options = new CursoredToSlackOption();
     options.webhookUrl = "https://localhost";
@@ -33,7 +38,7 @@ describe("options", () => {
     });
     expect(done).toBe(true);
 
-    const got = await c.getOptions();
+    got = await c.getOptions();
     expect(got.webhookUrl).toBe("https://localhost");
   });
 });
@@ -65,5 +70,41 @@ describe("context menu", () => {
     const c = new CursoredToSlack(mockContextMenu);
     c.addContextMenu();
     // todo: check message
+  });
+});
+
+const mockApi = function () {
+  return {
+    storage: {
+      sync: {
+        values: {},
+        get(key, f) {
+          f(this.values);
+        },
+        set(keyValue, f) {
+          this.values = keyValue;
+          f();
+        },
+      },
+    },
+  };
+};
+describe("sendRequestToSlackApi", () => {
+  beforeEach(() => {
+    fetch.resetMocks();
+  });
+
+  test("success", async () => {
+    const mockResponse = "ok";
+    fetch.mockResponse(mockResponse);
+
+    const c = new CursoredToSlack(mockApi());
+    const option = new CursoredToSlackOption();
+    option.webhookUrl = "https://localhost/ok";
+    c.setOptions(option);
+    const resp = await c.sendRequestToSlackApi("test").catch((error) => error);
+    expect(fetch.mock.calls.length).toBe(1);
+    expect(fetch.mock.calls[0][0]).toBe("https://localhost/ok");
+    expect(resp).toBe(mockResponse);
   });
 });
