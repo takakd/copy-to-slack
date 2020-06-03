@@ -10,11 +10,9 @@ Chrome extension to note with Slack.
 - license
 - etc
 
-**TODO: Recordit GIF**
-
 **Features**
 
-![Features](https://raw.githubusercontent.com/takakd/cursored-to-slack/master/images/get_started128.png)
+![Features](/doc/features.gif)
 
 Send the contents cursored to Slack. That's all.
 
@@ -98,5 +96,5 @@ $ npm install
 
 ## License
 
-* [MIT license](https://github.com/takakd/cursored-to-slack/blob/master/LICENSE)
+* [MIT license](/LICENSE)
 * Copyright 2020 &copy; takakd
