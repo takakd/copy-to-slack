@@ -13,18 +13,17 @@ export const Const = {
     webhookMaskButton: "toggleWebhoookUrlMaskButton",
     webhookIconMask: "toggleWebhoookUrlMaskButtonMask",
     webhookIconUnMask: "toggleWebhoookUrlMaskButtonUnMask",
-    testAlert: "collapseTestErrorAlert",
-    testDetail: "collapseTestErrorDetail",
-    testAlertTemplate: "collapseTestErrorAlertTemplate",
+    alert: "alertMessage",
+    alertTemplate: "alertMessageTemplate",
   },
   label: {
     save: "Save",
-    saving: "Saving",
+    saving: "Saving...",
+    saveSuccess: "Saved.",
     test: "Test",
-    testing: "Sending",
-  },
-  class: {
-    hideWebhookMaskIcon: "toggleWebhookUrlMaskIcon-hide",
+    testing: "Sending...",
+    testSuccess: "Sent. Check Slack channel.",
+    testFailed: "Failed to send a test message.",
   },
   uiStateChangeIntervalInSec: 1,
 };
@@ -115,7 +114,7 @@ export function validateButtons() {
  * Set a button UI sate.
  * @param {string} buttonId UI id.
  * @param {string} labelId UI id.
- * @param {number} state 1:disabled 2:enabled 3:running
+ * @param {number} state 1:disabled 2:enabled 3:running 4:error
  * @param {string} label Button label.
  */
 export function setButtonUiState(buttonId, labelId, state, label) {
@@ -146,12 +145,12 @@ export function maskWebhookUrlInputValue(isMask) {
   const iconUnMask = document.getElementById(Const.domId.webhookIconUnMask);
   if (isMask) {
     input.setAttribute("type", "password");
-    iconMask.classList.remove(Const.class.hideWebhookMaskIcon);
-    iconUnMask.classList.add(Const.class.hideWebhookMaskIcon);
+    iconMask.classList.remove("d-none");
+    iconUnMask.classList.add("d-none");
   } else {
     input.setAttribute("type", "text");
-    iconMask.classList.add(Const.class.hideWebhookMaskIcon);
-    iconUnMask.classList.remove(Const.class.hideWebhookMaskIcon);
+    iconMask.classList.add("d-none");
+    iconUnMask.classList.remove("d-none");
   }
 }
 
@@ -160,41 +159,39 @@ export function maskWebhookUrlInputValue(isMask) {
  */
 export function toggleWebhookUrlInputMask() {
   const maskIcon = document.getElementById(Const.domId.webhookIconMask);
-  const isMaskNext = maskIcon.classList.contains(
-    Const.class.hideWebhookMaskIcon
-  );
+  const isMaskNext = maskIcon.classList.contains("d-none");
   maskWebhookUrlInputValue(isMaskNext);
 }
 
 /**
- * Show test sending error alert.
+ * Show alert.
  * @param {boolean} isShow Show the alert if it's true, hide otherwise.
+ * @param {boolean} isError Show the danger alert if it's true, success otherwise.
+ * @param {string} message Alert message.
+ * @param {string} additionMessage Alert addition message.
  */
-export function showTestSendingErrorAlert(isShow) {
+export function showAlertMessage(isShow, isError, message, additionMessage) {
   if (isShow) {
-    const template = document.getElementById(Const.domId.testAlertTemplate);
+    const template = document.getElementById(Const.domId.alertTemplate);
     const alertBlock = template.cloneNode(true);
     const alert = alertBlock.getElementsByClassName("alert");
-    const alertLink = alertBlock.getElementsByClassName("alert-link");
-    const alertCollapse = alertBlock.getElementsByClassName("collapse");
-    console.log(alert);
-    alert[0].id = Const.domId.testAlert;
-    alertLink[0].setAttribute("href", "#" + Const.domId.testDetail);
-    alertCollapse[0].id = Const.domId.testDetail;
+    const alertMessage = alert[0].getElementsByClassName("alertMessage");
+    const alertAdditionMessage = alert[0].getElementsByClassName(
+      "alertAdditionMessage"
+    );
+    alert[0].id = Const.domId.alert;
+    alert[0].classList.add(isError ? "alert-danger" : "alert-success");
+    alertMessage[0].textContent = message;
+    if (additionMessage) {
+      alertAdditionMessage[0].textContent = additionMessage;
+    } else {
+      alertAdditionMessage[0].remove();
+    }
     template.before(alert[0]);
-    template.before(alertCollapse[0]);
-
-    $("#" + Const.domId.testAlert).on("close.bs.alert", () => {
-      document.getElementById(Const.domId.testDetail).remove();
-    });
   } else {
-    const alert = document.getElementById(Const.domId.testAlert);
+    const alert = document.getElementById(Const.domId.alert);
     if (alert) {
       alert.remove();
-    }
-    const detail = document.getElementById(Const.domId.testDetail);
-    if (detail) {
-      detail.remove();
     }
   }
 }
@@ -219,7 +216,7 @@ export function constructOptions() {
         return;
       }
 
-      showTestSendingErrorAlert(false);
+      showAlertMessage(false);
 
       setButtonUiState(
         Const.domId.testButton,
@@ -233,8 +230,12 @@ export function constructOptions() {
           .sendRequestToSlackApi("test message.")
           .catch((error) => error);
 
-        const failed = result instanceof Error;
-        showTestSendingErrorAlert(failed);
+        const isError = result instanceof Error;
+        if (isError) {
+          showAlertMessage(true, isError, Const.label.testFailed, result.stack);
+        } else {
+          showAlertMessage(true, isError, Const.label.testSuccess);
+        }
 
         setButtonUiState(
           Const.domId.testButton,
@@ -257,6 +258,8 @@ export function constructOptions() {
         return;
       }
 
+      showAlertMessage(false);
+
       setButtonUiState(
         Const.domId.saveButton,
         Const.domId.saveButtonLabel,
@@ -268,6 +271,9 @@ export function constructOptions() {
         const option = getOptionFromForm();
         cts.setOptions(option).then(() => {
           console.log("done: save", option);
+
+          showAlertMessage(true, false, Const.label.saveSuccess);
+
           setButtonUiState(
             Const.domId.saveButton,
             Const.domId.saveButtonLabel,
@@ -283,15 +289,6 @@ export function constructOptions() {
   if (maskButton) {
     maskButton.addEventListener("click", () => {
       toggleWebhookUrlInputMask();
-    });
-  }
-
-  const alert = document.getElementById(Const.domId.testAlert);
-  if (alert) {
-    alert.addEventListener("closed.bs.alert", () => {
-      document.getElementById(Const.domId.testDetail).collapse({
-        toggle: false,
-      });
     });
   }
 
