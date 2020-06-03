@@ -62,7 +62,7 @@ export default class CursoredToSlack {
    * this is used by addContextMenu() function.
    * @see {@link https://developer.chrome.com/extensions/contextMenus#event-onClicked}
    */
-  contextMenuOnClickedCallback(info) {
+  async contextMenuOnClickedCallback(info) {
     const isMyEvent = ContextMenuId === info.menuItemId;
     if (!isMyEvent) {
       return;
@@ -82,12 +82,13 @@ export default class CursoredToSlack {
         break;
       }
     }
-    console.log(message);
-    // console.log("item " + info.menuItemId + " was clicked");
-    // console.log("info: " + JSON.stringify(info));
-    // console.log("tab: " + JSON.stringify(tab));
+    if (!message) {
+      console.log('no contents');
+      return;
+    }
 
-    // TODO: send message to slack and send chrome-message to ui.
+    const options = await this.getOptions();
+    this.sendRequestToSlackApi(message, options.webhookUrl);
   }
 
   /**
@@ -96,7 +97,7 @@ export default class CursoredToSlack {
   addContextMenu() {
     // add onClicked callback.
     this.chrome.contextMenus.onClicked.addListener(
-      this.contextMenuOnClickedCallback
+      this.contextMenuOnClickedCallback.bind(this)
     );
 
     // const contexts = ["page", "selection", "link", "editable", "image", "video", "audio"];
