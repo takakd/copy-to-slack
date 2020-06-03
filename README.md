@@ -31,7 +31,7 @@ See the details [here](https://api.slack.com/messaging/webhooks).
 
 1. Open Chrome and Extension tab.
 2. Turn ON Developer mode.
-3. Click `Load unpacked` and select `dist` in this repository.
+3. Click `Load unpacked` and select `extroot` in this repository.
 
 See the details [here](https://developer.chrome.com/extensions/getstarted#manifest).
 
@@ -73,6 +73,16 @@ $ npm install
 | `npm run test` | Run unit tests. |
 | `npm run lint` | Lint sources by ESLint. |
 | `npm run lint:fix` | Format sources by Prettier. |
+
+### Structure
+
+```
+.
+├── extroot: Directory to put outputs.
+├── images: Icons.
+└── src: Sources.
+```
+
 
 ## Contributing
 

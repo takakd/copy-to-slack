@@ -10,7 +10,7 @@ const config = (env) => {
         devtool: env.production ? false : 'inline-source-map',
         entry: `./src/${name}.js`,
         output: {
-            path: path.resolve(__dirname, './'),
+            path: path.resolve(__dirname, './extroot/'),
             filename: `${name}.js`
         },
         module: {
