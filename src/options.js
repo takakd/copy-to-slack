@@ -1,18 +1,21 @@
 import CursoredToSlack from "./cursoredtoslack";
-import CursoredToSlackOption from "./cursoredtoslack-option";
+import {
+  SlackWebhookCommonHostPath,
+  CursoredToSlackOption,
+} from "./cursoredtoslack-option";
 
 export const Const = {
   domId: {
     form: "optionForm",
-    webhookUrl: "slackWebhookUrlInput",
+    webhookPath: "slackWebhookPathInput",
     testButton: "testButton",
     saveButton: "saveButton",
     testButtonLabel: "testButtonLabel",
     saveButtonLabel: "saveButtonLabel",
-    webhookFeedback: "slackWebhookUrlInvalidFeedback",
-    webhookMaskButton: "toggleWebhoookUrlMaskButton",
-    webhookIconMask: "toggleWebhoookUrlMaskButtonMask",
-    webhookIconUnMask: "toggleWebhoookUrlMaskButtonUnMask",
+    webhookFeedback: "slackWebhookPathInvalidFeedback",
+    webhookMaskButton: "toggleWebhookPathMaskButton",
+    webhookIconMask: "toggleWebhookPathMaskButtonMask",
+    webhookIconUnMask: "toggleWebhookPathMaskButtonUnMask",
     alert: "alertMessage",
     alertTemplate: "alertMessageTemplate",
   },
@@ -22,7 +25,8 @@ export const Const = {
     saveSuccess: "Saved.",
     test: "Test",
     testing: "Sending...",
-    testSuccess: "Sent. Check Slack channel.",
+    testSuccess: "Sent.",
+    testSuccessAddition: "Check Slack channel.",
     testFailed: "Failed to send a test message.",
   },
   uiStateChangeIntervalInSec: 1,
@@ -33,10 +37,10 @@ export const Const = {
  * @returns CursoredToSlackOption
  */
 export function getOptionFromForm() {
-  const webhookUrlInput = document.getElementById(Const.domId.webhookUrl);
+  const webhookPathInput = document.getElementById(Const.domId.webhookPath);
 
   const option = new CursoredToSlackOption();
-  option.webhookUrl = webhookUrlInput.value;
+  option.webhookPath = webhookPathInput.value;
 
   return option;
 }
@@ -46,46 +50,44 @@ export function getOptionFromForm() {
  * @returns {boolean} Returns true if valid, false otherwise.
  */
 export function validateForm() {
-  const validUrl = validateSlackWebhookUrl();
+  const validUrl = validateSlackwebhookPath();
   validateButtons();
   return validUrl;
 }
 
 /**
- * Validate webhook url.
+ * Remove host and common path from URL.
  * @params {string} value.
- * @returns {string} Returns error string if not valid, empty otherwise.
+ * @returns {string} Returns Removed URL.
  */
-export function validateSlackWebhookUrlValue(value) {
-  let error = "";
-  if (!value) {
-    error = "Enter a Slack Webhook URL for sending message.";
-  } else if (!value.match(/^https:\/\/[\w!?/+\-_~=;.,*&@#$%()'[\]]+/)) {
-    error = "Enter a correct URL.";
+export function removeSlackHostPathFromSlackwebhookPath() {
+  const input = document.getElementById(Const.domId.webhookPath);
+  const replaced = input.value.replace(SlackWebhookCommonHostPath, "");
+  if (replaced) {
+    input.value = replaced;
   }
-  return error;
 }
 
 /**
  * Validate webhook url, and update UI state.
  * @returns {boolean} Returns true if valid, false otherwise.
  */
-export function validateSlackWebhookUrl() {
+export function validateSlackwebhookPath() {
   const option = getOptionFromForm();
   const errors = option.validate();
-  const input = document.getElementById(Const.domId.webhookUrl);
-  if (errors["webhookUrl"]) {
+  const input = document.getElementById(Const.domId.webhookPath);
+  if (errors["webhookPath"]) {
     input.classList.add("is-invalid");
   } else {
     input.classList.remove("is-invalid");
   }
 
-  if (errors["webhookUrl"]) {
+  if (errors["webhookPath"]) {
     const feedBack = document.getElementById(Const.domId.webhookFeedback);
-    feedBack.textContent = errors["webhookUrl"];
+    feedBack.textContent = errors["webhookPath"];
   }
 
-  return typeof errors["webhookUrl"] === "undefined";
+  return typeof errors["webhookPath"] === "undefined";
 }
 
 /**
@@ -94,7 +96,7 @@ export function validateSlackWebhookUrl() {
 export function validateButtons() {
   const option = getOptionFromForm();
   const errors = option.validate();
-  const isValid = typeof errors["webhookUrl"] === "undefined";
+  const isValid = typeof errors["webhookPath"] === "undefined";
 
   setButtonUiState(
     Const.domId.testButton,
@@ -139,8 +141,8 @@ export function setButtonUiState(buttonId, labelId, state, label) {
  * Change Webhook URL Mask Icon visible state.
  * @param {boolean} isMask Mask URL if it's true, Unmask otherwise.
  */
-export function maskWebhookUrlInputValue(isMask) {
-  const input = document.getElementById(Const.domId.webhookUrl);
+export function maskwebhookPathInputValue(isMask) {
+  const input = document.getElementById(Const.domId.webhookPath);
   const iconMask = document.getElementById(Const.domId.webhookIconMask);
   const iconUnMask = document.getElementById(Const.domId.webhookIconUnMask);
   if (isMask) {
@@ -157,10 +159,10 @@ export function maskWebhookUrlInputValue(isMask) {
 /**
  * Toggle Webhook URL Mask Icon visible state.
  */
-export function toggleWebhookUrlInputMask() {
+export function togglewebhookPathInputMask() {
   const maskIcon = document.getElementById(Const.domId.webhookIconMask);
   const isMaskNext = maskIcon.classList.contains("d-none");
-  maskWebhookUrlInputValue(isMaskNext);
+  maskwebhookPathInputValue(isMaskNext);
 }
 
 /**
@@ -200,10 +202,11 @@ export function showAlertMessage(isShow, isError, message, additionMessage) {
  * construct options js.
  */
 export function constructOptions() {
-  const webhookInput = document.getElementById(Const.domId.webhookUrl);
+  const webhookInput = document.getElementById(Const.domId.webhookPath);
   if (webhookInput) {
     webhookInput.addEventListener("blur", () => {
-      validateSlackWebhookUrl();
+      removeSlackHostPathFromSlackwebhookPath();
+      validateSlackwebhookPath();
       validateButtons();
     });
   }
@@ -226,15 +229,21 @@ export function constructOptions() {
       );
       setTimeout(async () => {
         const cts = new CursoredToSlack(chrome);
+        const option = getOptionFromForm();
         const result = await cts
-          .sendRequestToSlackApi("test message.")
+          .sendRequestToSlackApi("test message.", option.webhookUrl)
           .catch((error) => error);
 
         const isError = result instanceof Error;
         if (isError) {
           showAlertMessage(true, isError, Const.label.testFailed, result.stack);
         } else {
-          showAlertMessage(true, isError, Const.label.testSuccess);
+          showAlertMessage(
+            true,
+            isError,
+            Const.label.testSuccess,
+            Const.label.testSuccessAddition
+          );
         }
 
         setButtonUiState(
@@ -270,8 +279,6 @@ export function constructOptions() {
         const cts = new CursoredToSlack(chrome);
         const option = getOptionFromForm();
         cts.setOptions(option).then(() => {
-          console.log("done: save", option);
-
           showAlertMessage(true, false, Const.label.saveSuccess);
 
           setButtonUiState(
@@ -288,21 +295,21 @@ export function constructOptions() {
   const maskButton = document.getElementById(Const.domId.webhookMaskButton);
   if (maskButton) {
     maskButton.addEventListener("click", () => {
-      toggleWebhookUrlInputMask();
+      togglewebhookPathInputMask();
     });
   }
 
   // initialize.
   const cts = new CursoredToSlack(chrome);
   cts.getOptions().then((options) => {
-    const isValid = validateSlackWebhookUrlValue(options.webhookUrl) === "";
+    const isValid = Object.keys(options.validate()).length === 0;
     if (isValid) {
-      document.getElementById(Const.domId.webhookUrl).value =
-        options.webhookUrl;
+      document.getElementById(Const.domId.webhookPath).value =
+        options.webhookPath;
     }
     validateButtons();
 
-    maskWebhookUrlInputValue(true);
+    maskwebhookPathInputValue(true);
   });
 }
 

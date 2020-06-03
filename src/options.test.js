@@ -1,14 +1,14 @@
 import {
   Const,
   getOptionFromForm,
-  maskWebhookUrlInputValue,
+  maskwebhookPathInputValue,
+  removeSlackHostPathFromSlackwebhookPath,
   setButtonUiState,
   showAlertMessage,
-  toggleWebhookUrlInputMask,
+  togglewebhookPathInputMask,
   validateButtons,
   validateForm,
-  validateSlackWebhookUrl,
-  validateSlackWebhookUrlValue,
+  validateSlackwebhookPath,
 } from "./options";
 
 /**
@@ -18,17 +18,17 @@ const setMockHtml = (document) => {
   document.body.innerHTML = `
   <form id="optionForm" class="mt-4">
     <div class="form-group">
-      <label for="slackWebhookUrlInput">Slack Webhook URL</label>
+      <label for="slackWebhookPathInput">Slack Webhook URL</label>
       <div>
-        <button id="toggleWebhoookUrlMaskButton" type="button">
-          <span id="toggleWebhoookUrlMaskButtonUnMask" class="toggleWebhookUrlMaskIcon d-none">&#x1f649;</span>
-          <span id="toggleWebhoookUrlMaskButtonMask" class="toggleWebhookUrlMaskIcon">&#x1f648;</span>
+        <button id="toggleWebhookPathMaskButton" type="button">
+          <span id="toggleWebhookPathMaskButtonUnMask" class="togglewebhookPathMaskIcon d-none">&#x1f649;</span>
+          <span id="toggleWebhookPathMaskButtonMask" class="togglewebhookPathMaskIcon">&#x1f648;</span>
         </button>
-        <input type="password" class="form-control" id="slackWebhookUrlInput" aria-describedby="slackWebhookHelp">
+        <input type="password" class="form-control" id="slackWebhookPathInput" aria-describedby="slackWebhookHelp">
         <div class="valid-feedback">
           OK.
         </div>
-        <div class="invalid-feedback" id="slackWebhookUrlInvalidFeedback">
+        <div class="invalid-feedback" id="slackWebhookPathInvalidFeedback">
           Please provide Slack Webhook URL.
         </div>
       </div>
@@ -62,69 +62,65 @@ const setMockHtml = (document) => {
 describe("options", () => {
   test("getOptionFromForm", () => {
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
+    document.getElementById(Const.domId.webhookPath).value =
+      "HZ54X/B01KE0V/Z251nBgwCPG";
 
     const got = getOptionFromForm();
-    expect(got.webhookUrl).toBe("https://localhost");
+    expect(got.webhookPath).toBe("HZ54X/B01KE0V/Z251nBgwCPG");
   });
 
   test("validateForm", () => {
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
+    document.getElementById(Const.domId.webhookPath).value =
+      "HZ54X/B01KE0V/Z251nBgwCPG";
     let isValid = validateForm();
     expect(true).toBe(isValid);
     expect(false).toBe(
       document
-        .getElementById(Const.domId.webhookUrl)
+        .getElementById(Const.domId.webhookPath)
         .classList.contains("is-invalid")
     );
     expect(false).toBe(
       document
-        .getElementById(Const.domId.webhookUrl)
+        .getElementById(Const.domId.webhookPath)
         .classList.contains("is-invalid")
     );
 
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookUrl).value = "";
+    document.getElementById(Const.domId.webhookPath).value = "";
     isValid = validateForm();
     expect(false).toBe(isValid);
     expect(true).toBe(
       document
-        .getElementById(Const.domId.webhookUrl)
+        .getElementById(Const.domId.webhookPath)
         .classList.contains("is-invalid")
     );
     expect(true).toBe(
       document
-        .getElementById(Const.domId.webhookUrl)
+        .getElementById(Const.domId.webhookPath)
         .classList.contains("is-invalid")
     );
   });
 
-  test("validateSlackWebhookUrlValue", () => {
-    expect(validateSlackWebhookUrlValue("https://localhost")).toBe("");
-    expect(validateSlackWebhookUrlValue("http://localhost")).not.toBe("");
-    expect(validateSlackWebhookUrlValue("test")).not.toBe("");
-    expect(validateSlackWebhookUrlValue("")).not.toBe("");
-  });
-
-  test("validateSlackWebhookUrl", () => {
+  test("validateSlackwebhookPath", () => {
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
-    let isValid = validateSlackWebhookUrl();
+    document.getElementById(Const.domId.webhookPath).value =
+      "HZ54X/B01KE0V/Z251nBgwCPG";
+    let isValid = validateSlackwebhookPath();
     expect(true).toBe(isValid);
     expect(false).toBe(
       document
-        .getElementById(Const.domId.webhookUrl)
+        .getElementById(Const.domId.webhookPath)
         .classList.contains("is-invalid")
     );
 
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookUrl).value = "";
+    document.getElementById(Const.domId.webhookPath).value = "";
     isValid = validateForm();
     expect(false).toBe(isValid);
     expect(true).toBe(
       document
-        .getElementById(Const.domId.webhookUrl)
+        .getElementById(Const.domId.webhookPath)
         .classList.contains("is-invalid")
     );
   });
@@ -132,7 +128,8 @@ describe("options", () => {
   test("validateButtons", () => {
     setMockHtml(document);
 
-    document.getElementById(Const.domId.webhookUrl).value = "https://localhost";
+    document.getElementById(Const.domId.webhookPath).value =
+      "HZ54X/B01KE0V/Z251nBgwCPG";
     validateButtons();
     expect(document.getElementById(Const.domId.testButton).disabled).toBe(
       false
@@ -141,7 +138,7 @@ describe("options", () => {
       false
     );
 
-    document.getElementById(Const.domId.webhookUrl).value = "";
+    document.getElementById(Const.domId.webhookPath).value = "";
     validateButtons();
     expect(document.getElementById(Const.domId.testButton).disabled).toBe(true);
     expect(document.getElementById(Const.domId.saveButton).disabled).toBe(true);
@@ -191,48 +188,48 @@ describe("options", () => {
     ).toBe("Done");
   });
 
-  test("maskWebhookUrlInputValue", () => {
+  test("maskwebhookPathInputValue", () => {
     setMockHtml(document);
     let mask, Unmask, input;
 
-    maskWebhookUrlInputValue(true);
+    maskwebhookPathInputValue(true);
     mask = document.getElementById(Const.domId.webhookIconMask);
     Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookUrl);
+    input = document.getElementById(Const.domId.webhookPath);
     expect(mask.classList.contains("d-none")).toBe(false);
     expect(Unmask.classList.contains("d-none")).toBe(true);
     expect(input.getAttribute("type")).toBe("password");
 
-    maskWebhookUrlInputValue(false);
+    maskwebhookPathInputValue(false);
     mask = document.getElementById(Const.domId.webhookIconMask);
     Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookUrl);
+    input = document.getElementById(Const.domId.webhookPath);
     expect(mask.classList.contains("d-none")).toBe(true);
     expect(Unmask.classList.contains("d-none")).toBe(false);
     expect(input.getAttribute("type")).toBe("text");
   });
 
-  test("toggleWebhookUrlInputMask", () => {
+  test("togglewebhookPathInputMask", () => {
     setMockHtml(document);
     let mask, Unmask, input;
 
     // set initial state.
-    maskWebhookUrlInputValue(true);
+    maskwebhookPathInputValue(true);
 
     // to unmask.
-    toggleWebhookUrlInputMask();
+    togglewebhookPathInputMask();
     mask = document.getElementById(Const.domId.webhookIconMask);
     Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookUrl);
+    input = document.getElementById(Const.domId.webhookPath);
     expect(mask.classList.contains("d-none")).toBe(true);
     expect(Unmask.classList.contains("d-none")).toBe(false);
     expect(input.getAttribute("type")).toBe("text");
 
     // to mask.
-    toggleWebhookUrlInputMask();
+    togglewebhookPathInputMask();
     mask = document.getElementById(Const.domId.webhookIconMask);
     Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookUrl);
+    input = document.getElementById(Const.domId.webhookPath);
     expect(mask.classList.contains("d-none")).toBe(false);
     expect(Unmask.classList.contains("d-none")).toBe(true);
     expect(input.getAttribute("type")).toBe("password");
@@ -294,5 +291,18 @@ describe("options", () => {
       expect(message[0].textContent).toBe("message");
       expect(addition[0].textContent).toBe("addition");
     }
+  });
+
+  test("removeSlackHostPathFromSlackwebhookPath", () => {
+    setMockHtml(document);
+
+    const input = document.getElementById(Const.domId.webhookPath);
+    input.value = "https://hooks.slack.com/services/abc/edf";
+    removeSlackHostPathFromSlackwebhookPath();
+    expect(input.value).toBe("abc/edf");
+
+    input.value = "https://localhost/test";
+    removeSlackHostPathFromSlackwebhookPath();
+    expect(input.value).toBe("https://localhost/test");
   });
 });

@@ -1,5 +1,5 @@
 import CursoredToSlack from "./cursoredtoslack";
-import CursoredToSlackOption from "./cursoredtoslack-option";
+import { CursoredToSlackOption } from "./cursoredtoslack-option";
 
 const mockOptions = {
   storage: {
@@ -29,17 +29,17 @@ describe("options", () => {
     got = await c.getOptions().catch((error) => {
       return error;
     });
-    expect(got.webhookUrl).toBe("");
+    expect(got.webhookPath).toBe("");
 
     options = new CursoredToSlackOption();
-    options.webhookUrl = "https://localhost";
+    options.webhookPath = "HZ54X/B01KE0V/Z251nBgwCPG";
     done = await c.setOptions(options).catch((error) => {
       return error;
     });
     expect(done).toBe(true);
 
     got = await c.getOptions();
-    expect(got.webhookUrl).toBe("https://localhost");
+    expect(got.webhookPath).toBe("HZ54X/B01KE0V/Z251nBgwCPG");
   });
 });
 
@@ -100,11 +100,13 @@ describe("sendRequestToSlackApi", () => {
 
     const c = new CursoredToSlack(mockApi());
     const option = new CursoredToSlackOption();
-    option.webhookUrl = "https://localhost/ok";
+    option.webhookPath = "HZ54X/B01KE0V/Z251nBgwCPG";
     c.setOptions(option);
-    const resp = await c.sendRequestToSlackApi("test").catch((error) => error);
+    const resp = await c
+      .sendRequestToSlackApi("test", "https//localhost/abc/def")
+      .catch((error) => error);
     expect(fetch.mock.calls.length).toBe(1);
-    expect(fetch.mock.calls[0][0]).toBe("https://localhost/ok");
+    expect(fetch.mock.calls[0][0]).toBe("https//localhost/abc/def");
     expect(resp).toBe(mockResponse);
   });
 });

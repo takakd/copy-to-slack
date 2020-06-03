@@ -1,6 +1,6 @@
 "use strict";
 
-import CursoredToSlackOption from "./cursoredtoslack-option";
+import { CursoredToSlackOption } from "./cursoredtoslack-option";
 
 /**
  * Persistence options key.
@@ -113,14 +113,13 @@ export default class CursoredToSlack {
   /**
    * Send request to Slack API.
    * @param {string} text Properties of post body.
+   * @param {string} webhookUrl SlackWebhookUrl
    */
-  async sendRequestToSlackApi(text) {
-    const option = await this.getOptions();
-
+  async sendRequestToSlackApi(text, webhookUrl) {
     // build data
     const body = { text: text };
 
-    return await fetch(option.webhookUrl, {
+    return await fetch(webhookUrl, {
       method: "POST",
       cache: "no-cache",
       headers: {

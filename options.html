@@ -8,24 +8,33 @@
   />
   <link rel="stylesheet" type="text/css"
         href="https://cdn.jsdelivr.net/gh/loadingio/loading.css@v2.0.0/dist/loading.min.css"/>
-  <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 <body>
 <div class="container">
   <h1 class="mt-4">Cursored to Slack</h1>
   <form id="optionForm" class="mt-4">
     <div class="form-group">
-      <label for="slackWebhookUrlInput">Slack Webhook URL</label>
+      <label for="slackWebhookPathInput">Slack Webhook URL</label>
       <div>
-        <button id="toggleWebhoookUrlMaskButton" type="button">
-          <span id="toggleWebhoookUrlMaskButtonUnMask" class="toggleWebhookUrlMaskIcon d-none">&#x1f649;</span>
-          <span id="toggleWebhoookUrlMaskButtonMask" class="toggleWebhookUrlMaskIcon">&#x1f648;</span>
-        </button>
-        <input type="password" class="form-control" id="slackWebhookUrlInput" aria-describedby="slackWebhookHelp">
+
+
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">https://hooks.slack.com/services/</span>
+          </div>
+          <input type="password" class="form-control" id="slackWebhookPathInput" aria-describedby="slackWebhookHelp">
+          <div class="input-group-append">
+            <button id="toggleWebhookPathMaskButton" class="input-group-text" type="button">
+              <span id="toggleWebhookPathMaskButtonUnMask" class="pr-1 d-none">&#x1f649;</span>
+              <span id="toggleWebhookPathMaskButtonMask" class="pr-1">&#x1f648;</span>
+            </button>
+          </div>
+        </div>
+
         <div class="valid-feedback">
           OK.
         </div>
-        <div class="invalid-feedback" id="slackWebhookUrlInvalidFeedback">
+        <div class="invalid-feedback" id="slackWebhookPathInvalidFeedback">
           Please provide Slack Webhook URL.
         </div>
       </div>

@@ -1,20 +1,33 @@
 "use strict";
 
+export const SlackWebhookCommonHostPath = "https://hooks.slack.com/services/";
+
 /**
  */
-export default class CursoredToSlackOption {
+export class CursoredToSlackOption {
   /**
    * Represents a options in extension.
    * @constructor
    */
   constructor(values) {
-    this.webhookUrl = "";
+    this.webhookPath = "";
 
     if (typeof values === "object") {
-      if (values["webhookUrl"]) {
-        this.webhookUrl = values["webhookUrl"];
+      if (values["webhookPath"]) {
+        this.webhookPath = values["webhookPath"];
       }
     }
+  }
+
+  /**
+   * Slack Webhook URL.
+   * @returns {string} Slack Webhook URL.
+   */
+  get webhookUrl() {
+    if (!this.webhookPath) {
+      return "";
+    }
+    return SlackWebhookCommonHostPath + this.webhookPath;
   }
 
   /**
@@ -26,12 +39,10 @@ export default class CursoredToSlackOption {
   validate() {
     let errors = {};
 
-    if (!this.webhookUrl) {
-      errors["webhookUrl"] = "Enter a Slack Webhook URL for sending message.";
-    } else if (
-      !this.webhookUrl.match(/^https:\/\/[\w!?/+\-_~=;.,*&@#$%()'[\]]+/)
-    ) {
-      errors["webhookUrl"] = "Enter a correct URL.";
+    if (!this.webhookPath) {
+      errors["webhookPath"] = "Enter a Slack Webhook URL for sending message.";
+    } else if (!this.webhookPath.match(/^(?!(http|\/))[a-zA-Z0-9/]+/)) {
+      errors["webhookPath"] = "Enter a correct URL.";
     }
 
     return errors;

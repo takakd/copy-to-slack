@@ -1,32 +1,40 @@
-import CursoredToSlackOption from "./cursoredtoslack-option";
+import {
+  CursoredToSlackOption,
+  SlackWebhookCommonHostPath,
+} from "./cursoredtoslack-option";
 
 describe("CursoredToSlackOption", () => {
   test("property", () => {
     const c = new CursoredToSlackOption();
-    c.webhookUrl = "test";
-    expect(c.webhookUrl).toBe("test");
+    c.webhookPath = "test";
+    expect(c.webhookPath).toBe("test");
+    expect(c.webhookUrl).toBe(SlackWebhookCommonHostPath + "test");
+
+    c.webhookPath = "";
+    expect(c.webhookPath).toBe("");
+    expect(c.webhookUrl).toBe("");
   });
 
   test("validate", () => {
     const c = new CursoredToSlackOption();
     let errors;
 
-    c.webhookUrl = "";
-    errors = c.validate();
-    expect(errors).toMatchObject({
-      webhookUrl: "Enter a Slack Webhook URL for sending message.",
-    });
-
-    c.webhookUrl = "http://localhost";
-    errors = c.validate();
-    expect(errors).toMatchObject({ webhookUrl: "Enter a correct URL." });
-
-    c.webhookUrl = "abc";
-    errors = c.validate();
-    expect(errors).toMatchObject({ webhookUrl: "Enter a correct URL." });
-
-    c.webhookUrl = "https://localhost";
+    c.webhookPath = "HZ54X/B01KE0V/Z251nBgwCPG";
     errors = c.validate();
     expect(errors).toMatchObject({});
+
+    c.webhookPath = "";
+    errors = c.validate();
+    expect(errors).toMatchObject({
+      webhookPath: "Enter a Slack Webhook URL for sending message.",
+    });
+
+    c.webhookPath = "http://localhost";
+    errors = c.validate();
+    expect(errors).toMatchObject({ webhookPath: "Enter a correct URL." });
+
+    c.webhookPath = "https://localhost";
+    errors = c.validate();
+    expect(errors).toMatchObject({ webhookPath: "Enter a correct URL." });
   });
 });
