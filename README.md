@@ -14,8 +14,9 @@ Chrome extension to note with Slack.
 
 **Features**
 
-Send the contents cursored to Slack.  
-That's all.
+![Features](https://raw.githubusercontent.com/takakd/cursored-to-slack/master/images/get_started128.png)
+
+Send the contents cursored to Slack. That's all.
 
 
 ## Install
