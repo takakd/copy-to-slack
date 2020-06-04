@@ -1,4 +1,5 @@
 import $ from "jquery";
+import "bootstrap";
 import CursoredToSlack from "./cursoredtoslack";
 import {
   CursoredToSlackOption,
