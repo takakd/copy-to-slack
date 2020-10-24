@@ -1,5 +1,5 @@
-import CursoredToSlack from "./cursoredtoslack";
-import { CursoredToSlackOption } from "./cursoredtoslack-option";
+import CursoredToSlack from "./copytoslack";
+import { CursoredToSlackOption } from "./copytoslack-option";
 
 const mockOptions = {
   storage: {

@@ -1,32 +1,31 @@
-# Cursored to Slack
+# Copy to Slack
+
+en | [ja](README.ja.md)
+
 Chrome extension to note with Slack.
 
-**TODO: Cool Logo**
+[Logo](doc/liam-briese-wB7V7mhufy4-unsplash.png?raw=true)
 
-**TODO: Badges**
+<span>Photo by <a href="https://unsplash.com/@liam_1?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Liam Briese</a> on <a href="https://unsplash.com/s/photos/cursor?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 
-- build status
-- coverage
-- license
-- etc
+![License-MIT](https://img.shields.io/badge/License-MIT-informational?style=flat)
 
 **Features**
 
 ![Features](/doc/features.gif)
 
-Send the contents cursored to Slack. That's all.
-
+Send contents dragged to slack.
 
 ## Install
 
-### 1. Get Slack Webhook URL.
+### 1. Get Slack Webhook URL
 
 1. Create your Slack App.
 2. Add a new Webhook to your workspace.
 
 See the details [here](https://api.slack.com/messaging/webhooks).
 
-### 2. Load the extension.
+### 2. Load Chrome extension
 
 1. Open Chrome and Extension tab.
 2. Turn ON Developer mode.
@@ -81,14 +80,6 @@ $ npm install
 ├── images: Icons.
 └── src: Sources.
 ```
-
-
-## Contributing
-
-1. Create an issue.
-2. Fork this repository.
-3. Modify and commit changes on the forked repository.
-4. Create a new pull request.
 
 ## Support
 

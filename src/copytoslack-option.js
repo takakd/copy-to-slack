@@ -13,8 +13,8 @@ export class CursoredToSlackOption {
     this.webhookPath = "";
 
     if (typeof values === "object") {
-      if (values["webhookPath"]) {
-        this.webhookPath = values["webhookPath"];
+      if (values.webhookPath) {
+        this.webhookPath = values.webhookPath;
       }
     }
   }
@@ -37,12 +37,12 @@ export class CursoredToSlackOption {
    *  Each message is associated with key.
    */
   validate() {
-    let errors = {};
+    const errors = {};
 
     if (!this.webhookPath) {
-      errors["webhookPath"] = "Enter a Slack Webhook URL for sending message.";
+      errors.webhookPath = "Enter a Slack Webhook URL for sending message.";
     } else if (!this.webhookPath.match(/^(?!(http|\/))[a-zA-Z0-9/]+/)) {
-      errors["webhookPath"] = "Enter a correct URL.";
+      errors.webhookPath = "Enter a correct URL.";
     }
 
     return errors;
