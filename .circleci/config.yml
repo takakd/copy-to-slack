@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
+  node: circleci/node@4.0
   # Ref. https://github.com/CircleCI-Public/slack-orb
   slack: circleci/slack@4.0
 jobs:
@@ -9,17 +9,14 @@ jobs:
       name: node/default
     steps:
       - checkout
+      - node/install-packages
       - run:
-          name: Install dependencies
-          command: npm install
-      - run: npm test
+          command: npm test
       - slack/notify:
           event: fail
-          mentions: "@takakd"
           template: basic_fail_1
       - slack/notify:
           event: pass
-          mentions: "@takakd"
           template: success_tagged_deploy_1
 workflows:
   build-and-notify:
