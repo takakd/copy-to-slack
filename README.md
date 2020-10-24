@@ -6,6 +6,8 @@ Chrome extension to note with Slack.
 
 <span>Photo by <a href="https://unsplash.com/@liam_1?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Liam Briese</a> on <a href="https://unsplash.com/s/photos/cursor?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 
+![CircleCI](https://circleci.com/gh/takakd/copy-to-slack.svg?style=shield&circle-token=8c945cf0479ce56f4149b22fbafa58c6795f5c2b)
+&nbsp;
 ![License-MIT](https://img.shields.io/badge/License-MIT-informational?style=flat)
 
 ## Features
