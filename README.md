@@ -1,20 +1,16 @@
 # Copy to Slack
 
-en | [ja](README.ja.md)
-
 Chrome extension to note with Slack.
 
-[Logo](doc/liam-briese-wB7V7mhufy4-unsplash.png?raw=true)
+![Logo](doc/liam-briese-wB7V7mhufy4-unsplash.png?raw=true)
 
 <span>Photo by <a href="https://unsplash.com/@liam_1?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Liam Briese</a> on <a href="https://unsplash.com/s/photos/cursor?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 
 ![License-MIT](https://img.shields.io/badge/License-MIT-informational?style=flat)
 
-**Features**
-
-![Features](/doc/features.gif)
-
+##Features
 Send contents dragged to slack.
+![Features](/doc/features.gif)
 
 ## Install
 
@@ -76,16 +72,12 @@ $ npm install
 
 ```
 .
-├── extroot: Directory to put outputs.
-├── images: Icons.
-└── src: Sources.
+├── extroot: Directory to put outputs
+├── images: Icons
+└── src: Sources
 ```
-
-## Support
-
-[@takakd](https://twitter.com/takakdkd)
 
 ## License
 
 * [MIT license](/LICENSE)
-* Copyright 2020 &copy; takakd
+* Copyright 2020 &copy; [takakd](https://twitter.com/takakdkd)
