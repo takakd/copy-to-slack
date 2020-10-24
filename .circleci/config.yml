@@ -15,9 +15,11 @@ jobs:
       - run: npm test
       - slack/notify:
           event: fail
+          mentions: "@takakd"
           template: basic_fail_1
       - slack/notify:
           event: pass
+          mentions: "@takakd"
           template: success_tagged_deploy_1
 workflows:
   build-and-notify:
