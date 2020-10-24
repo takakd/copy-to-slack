@@ -15,11 +15,9 @@ jobs:
       - run: npm test
       - slack/status:
           fail_only: false
-          mentions: "takakd"
           template: success_tagged_deploy_1
       - slack/status:
           fail_only: false
-          mentions: "takakd"
           template: basic_fail_1
 workflows:
   build-and-notify:
