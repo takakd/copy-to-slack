@@ -1,3 +1,4 @@
+import $ from "jquery";
 import {
   Const,
   getOptionFromForm,
@@ -62,8 +63,7 @@ const setMockHtml = (document) => {
 describe("options", () => {
   test("getOptionFromForm", () => {
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookPath).value =
-      "HZ54X/B01KE0V/Z251nBgwCPG";
+    $(`#${Const.domId.webhookPath}`).val("HZ54X/B01KE0V/Z251nBgwCPG");
 
     const got = getOptionFromForm();
     expect(got.webhookPath).toBe("HZ54X/B01KE0V/Z251nBgwCPG");
@@ -71,77 +71,43 @@ describe("options", () => {
 
   test("validateForm", () => {
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookPath).value =
-      "HZ54X/B01KE0V/Z251nBgwCPG";
+    $(`#${Const.domId.webhookPath}`).val("HZ54X/B01KE0V/Z251nBgwCPG");
     let isValid = validateForm();
     expect(true).toBe(isValid);
-    expect(false).toBe(
-      document
-        .getElementById(Const.domId.webhookPath)
-        .classList.contains("is-invalid")
-    );
-    expect(false).toBe(
-      document
-        .getElementById(Const.domId.webhookPath)
-        .classList.contains("is-invalid")
-    );
+    expect(false).toBe($(`#${Const.domId.webhookPath}`).hasClass("is-invalid"));
 
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookPath).value = "";
+    $(`#${Const.domId.webhookPath}`).val("");
     isValid = validateForm();
     expect(false).toBe(isValid);
-    expect(true).toBe(
-      document
-        .getElementById(Const.domId.webhookPath)
-        .classList.contains("is-invalid")
-    );
-    expect(true).toBe(
-      document
-        .getElementById(Const.domId.webhookPath)
-        .classList.contains("is-invalid")
-    );
+    expect(true).toBe($(`#${Const.domId.webhookPath}`).hasClass("is-invalid"));
   });
 
   test("validateSlackwebhookPath", () => {
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookPath).value =
-      "HZ54X/B01KE0V/Z251nBgwCPG";
+    $(`#${Const.domId.webhookPath}`).val("HZ54X/B01KE0V/Z251nBgwCPG");
     let isValid = validateSlackwebhookPath();
     expect(true).toBe(isValid);
-    expect(false).toBe(
-      document
-        .getElementById(Const.domId.webhookPath)
-        .classList.contains("is-invalid")
-    );
+    expect(false).toBe($(`#${Const.domId.webhookPath}`).hasClass("is-invalid"));
 
     setMockHtml(document);
-    document.getElementById(Const.domId.webhookPath).value = "";
+    $(`#${Const.domId.webhookPath}`).val("");
     isValid = validateForm();
     expect(false).toBe(isValid);
-    expect(true).toBe(
-      document
-        .getElementById(Const.domId.webhookPath)
-        .classList.contains("is-invalid")
-    );
+    expect(true).toBe($(`#${Const.domId.webhookPath}`).hasClass("is-invalid"));
   });
 
   test("validateButtons", () => {
     setMockHtml(document);
-
-    document.getElementById(Const.domId.webhookPath).value =
-      "HZ54X/B01KE0V/Z251nBgwCPG";
+    $(`#${Const.domId.webhookPath}`).val("HZ54X/B01KE0V/Z251nBgwCPG");
     validateButtons();
-    expect(document.getElementById(Const.domId.testButton).disabled).toBe(
-      false
-    );
-    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(
-      false
-    );
+    expect($(`#${Const.domId.testButton}`).prop("disabled")).toBe(false);
+    expect($(`#${Const.domId.saveButton}`).prop("disabled")).toBe(false);
 
-    document.getElementById(Const.domId.webhookPath).value = "";
+    $(`#${Const.domId.webhookPath}`).val("");
     validateButtons();
-    expect(document.getElementById(Const.domId.testButton).disabled).toBe(true);
-    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(true);
+    expect($(`#${Const.domId.testButton}`).prop("disabled")).toBe(true);
+    expect($(`#${Const.domId.saveButton}`).prop("disabled")).toBe(true);
   });
 
   test("setButtonUiState", () => {
@@ -153,7 +119,7 @@ describe("options", () => {
       1,
       "Save"
     );
-    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(true);
+    expect($(`#${Const.domId.saveButton}`).prop("disabled")).toBe(true);
 
     setButtonUiState(
       Const.domId.saveButton,
@@ -161,9 +127,7 @@ describe("options", () => {
       2,
       "Save"
     );
-    expect(document.getElementById(Const.domId.saveButton).disabled).toBe(
-      false
-    );
+    expect($(`#${Const.domId.saveButton}`).prop("disabled")).toBe(false);
 
     setButtonUiState(
       Const.domId.saveButton,
@@ -171,11 +135,7 @@ describe("options", () => {
       3,
       "Save"
     );
-    expect(
-      document
-        .getElementById(Const.domId.saveButton)
-        .classList.contains("running")
-    ).toBe(true);
+    expect($(`#${Const.domId.saveButton}`).hasClass("running")).toBe(true);
 
     setButtonUiState(
       Const.domId.saveButton,
@@ -183,9 +143,7 @@ describe("options", () => {
       1,
       "Done"
     );
-    expect(
-      document.getElementById(Const.domId.saveButtonLabel).textContent
-    ).toBe("Done");
+    expect($(`#${Const.domId.saveButtonLabel}`).text()).toBe("Done");
   });
 
   test("maskwebhookPathInputValue", () => {
@@ -193,20 +151,18 @@ describe("options", () => {
     let mask, Unmask, input;
 
     maskwebhookPathInputValue(true);
-    mask = document.getElementById(Const.domId.webhookIconMask);
-    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookPath);
-    expect(mask.classList.contains("d-none")).toBe(false);
-    expect(Unmask.classList.contains("d-none")).toBe(true);
-    expect(input.getAttribute("type")).toBe("password");
+    expect($(`#${Const.domId.webhookIconMask}`).hasClass("d-none")).toBe(false);
+    expect($(`#${Const.domId.webhookIconUnMask}`).hasClass("d-none")).toBe(
+      true
+    );
+    expect($(`#${Const.domId.webhookPath}`).attr("type")).toBe("password");
 
     maskwebhookPathInputValue(false);
-    mask = document.getElementById(Const.domId.webhookIconMask);
-    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookPath);
-    expect(mask.classList.contains("d-none")).toBe(true);
-    expect(Unmask.classList.contains("d-none")).toBe(false);
-    expect(input.getAttribute("type")).toBe("text");
+    expect($(`#${Const.domId.webhookIconMask}`).hasClass("d-none")).toBe(true);
+    expect($(`#${Const.domId.webhookIconUnMask}`).hasClass("d-none")).toBe(
+      false
+    );
+    expect($(`#${Const.domId.webhookPath}`).attr("type")).toBe("text");
   });
 
   test("togglewebhookPathInputMask", () => {
@@ -218,63 +174,55 @@ describe("options", () => {
 
     // to unmask.
     togglewebhookPathInputMask();
-    mask = document.getElementById(Const.domId.webhookIconMask);
-    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookPath);
-    expect(mask.classList.contains("d-none")).toBe(true);
-    expect(Unmask.classList.contains("d-none")).toBe(false);
-    expect(input.getAttribute("type")).toBe("text");
+    expect($(`#${Const.domId.webhookIconMask}`).hasClass("d-none")).toBe(true);
+    expect($(`#${Const.domId.webhookIconUnMask}`).hasClass("d-none")).toBe(
+      false
+    );
+    expect($(`#${Const.domId.webhookPath}`).attr("type")).toBe("text");
 
     // to mask.
     togglewebhookPathInputMask();
-    mask = document.getElementById(Const.domId.webhookIconMask);
-    Unmask = document.getElementById(Const.domId.webhookIconUnMask);
-    input = document.getElementById(Const.domId.webhookPath);
-    expect(mask.classList.contains("d-none")).toBe(false);
-    expect(Unmask.classList.contains("d-none")).toBe(true);
-    expect(input.getAttribute("type")).toBe("password");
+    expect($(`#${Const.domId.webhookIconMask}`).hasClass("d-none")).toBe(false);
+    expect($(`#${Const.domId.webhookIconUnMask}`).hasClass("d-none")).toBe(
+      true
+    );
+    expect($(`#${Const.domId.webhookPath}`).attr("type")).toBe("password");
   });
 
   test("showAlertMessage", () => {
     setMockHtml(document);
-    let alert, message, addition;
+    let $alert;
 
     showAlertMessage(true, true, "message", "addition");
-    alert = document.getElementById(Const.domId.alert);
-    expect(alert).not.toBeNull();
-    if (alert) {
-      message = alert.getElementsByClassName("alertMessage");
-      addition = alert.getElementsByClassName("alertAdditionMessage");
-      expect(alert.classList.contains("alert-danger")).toBe(true);
-      expect(message[0].textContent).toBe("message");
-      expect(addition[0].textContent).toBe("addition");
+    $alert = $(`#${Const.domId.alert}`);
+    expect($alert.length).not.toBe(0);
+    if ($alert.length) {
+      expect($alert.hasClass("alert-danger")).toBe(true);
+      expect($(".alertMessage", $alert).text()).toBe("message");
+      expect($(".alertAdditionMessage", $alert).text()).toBe("addition");
     }
 
     showAlertMessage(false);
-    alert = document.getElementById(Const.domId.alert);
-    expect(alert).toBeNull();
+    $alert = $(`#${Const.domId.alert}`);
+    expect($alert.length).toBe(0);
 
     showAlertMessage(true, true, "message", "");
-    alert = document.getElementById(Const.domId.alert);
-    expect(alert).not.toBeNull();
-    if (alert) {
-      message = alert.getElementsByClassName("alertMessage");
-      addition = alert.getElementsByClassName("alertAdditionMessage");
-      expect(alert.classList.contains("alert-danger")).toBe(true);
-      expect(message[0].textContent).toBe("message");
-      expect(addition.length).toBe(0);
+    $alert = $(`#${Const.domId.alert}`);
+    expect($alert.length).not.toBe(0);
+    if ($alert.length) {
+      expect($alert.hasClass("alert-danger")).toBe(true);
+      expect($(".alertMessage", $alert).text()).toBe("message");
+      expect($(".alertAdditionMessage", $alert).length).toBe(0);
     }
     showAlertMessage(false);
 
     showAlertMessage(true, true, "", "");
-    alert = document.getElementById(Const.domId.alert);
-    expect(alert).not.toBeNull();
-    if (alert) {
-      message = alert.getElementsByClassName("alertMessage");
-      addition = alert.getElementsByClassName("alertAdditionMessage");
-      expect(alert.classList.contains("alert-danger")).toBe(true);
-      expect(message[0].textContent).toBe("");
-      expect(addition.length).toBe(0);
+    $alert = $(`#${Const.domId.alert}`);
+    expect($alert.length).not.toBe(0);
+    if ($alert.length) {
+      expect($alert.hasClass("alert-danger")).toBe(true);
+      expect($(".alertMessage", $alert).text()).toBe("");
+      expect($(".alertAdditionMessage", $alert).length).toBe(0);
     }
     showAlertMessage(false);
 
@@ -282,27 +230,28 @@ describe("options", () => {
     // showAlertMessage(false, false, 'message', 'addition');
 
     showAlertMessage(true, false, "message", "addition");
-    alert = document.getElementById(Const.domId.alert);
-    expect(alert).not.toBeNull();
-    if (alert) {
-      message = alert.getElementsByClassName("alertMessage");
-      addition = alert.getElementsByClassName("alertAdditionMessage");
-      expect(alert.classList.contains("alert-success")).toBe(true);
-      expect(message[0].textContent).toBe("message");
-      expect(addition[0].textContent).toBe("addition");
+    $alert = $(`#${Const.domId.alert}`);
+    expect($alert.length).not.toBe(0);
+    if ($alert.length) {
+      expect($alert.hasClass("alert-success")).toBe(true);
+      expect($(".alertMessage", $alert).text()).toBe("message");
+      expect($(".alertAdditionMessage", $alert).text()).toBe("addition");
     }
   });
 
   test("removeSlackHostPathFromSlackwebhookPath", () => {
     setMockHtml(document);
 
-    const input = document.getElementById(Const.domId.webhookPath);
-    input.value = "https://hooks.slack.com/services/abc/edf";
+    $(`#${Const.domId.webhookPath}`).val(
+      "https://hooks.slack.com/services/abc/edf"
+    );
     removeSlackHostPathFromSlackwebhookPath();
-    expect(input.value).toBe("abc/edf");
+    expect($(`#${Const.domId.webhookPath}`).val()).toBe("abc/edf");
 
-    input.value = "https://localhost/test";
+    $(`#${Const.domId.webhookPath}`).val("https://localhost/test");
     removeSlackHostPathFromSlackwebhookPath();
-    expect(input.value).toBe("https://localhost/test");
+    expect($(`#${Const.domId.webhookPath}`).val()).toBe(
+      "https://localhost/test"
+    );
   });
 });

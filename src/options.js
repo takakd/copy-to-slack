@@ -1,7 +1,9 @@
+import $ from "jquery";
+import "bootstrap";
 import CursoredToSlack from "./cursoredtoslack";
 import {
-  SlackWebhookCommonHostPath,
   CursoredToSlackOption,
+  SlackWebhookCommonHostPath,
 } from "./cursoredtoslack-option";
 
 export const Const = {
@@ -37,11 +39,8 @@ export const Const = {
  * @returns CursoredToSlackOption
  */
 export function getOptionFromForm() {
-  const webhookPathInput = document.getElementById(Const.domId.webhookPath);
-
   const option = new CursoredToSlackOption();
-  option.webhookPath = webhookPathInput.value;
-
+  option.webhookPath = $(`#${Const.domId.webhookPath}`).val();
   return option;
 }
 
@@ -61,10 +60,13 @@ export function validateForm() {
  * @returns {string} Returns Removed URL.
  */
 export function removeSlackHostPathFromSlackwebhookPath() {
-  const input = document.getElementById(Const.domId.webhookPath);
-  const replaced = input.value.replace(SlackWebhookCommonHostPath, "");
-  if (replaced) {
-    input.value = replaced;
+  const $input = $(`#${Const.domId.webhookPath}`);
+  const value = $input.val();
+  if (value) {
+    const replaced = value.replace(SlackWebhookCommonHostPath, "");
+    if (replaced) {
+      $input.val(replaced);
+    }
   }
 }
 
@@ -75,16 +77,16 @@ export function removeSlackHostPathFromSlackwebhookPath() {
 export function validateSlackwebhookPath() {
   const option = getOptionFromForm();
   const errors = option.validate();
-  const input = document.getElementById(Const.domId.webhookPath);
+  const $input = $(`#${Const.domId.webhookPath}`);
   if (errors["webhookPath"]) {
-    input.classList.add("is-invalid");
+    $input.addClass("is-invalid");
   } else {
-    input.classList.remove("is-invalid");
+    $input.removeClass("is-invalid");
   }
 
   if (errors["webhookPath"]) {
-    const feedBack = document.getElementById(Const.domId.webhookFeedback);
-    feedBack.textContent = errors["webhookPath"];
+    const $feedBack = $(`#${Const.domId.webhookFeedback}`);
+    $feedBack.text(errors["webhookPath"]);
   }
 
   return typeof errors["webhookPath"] === "undefined";
@@ -120,20 +122,17 @@ export function validateButtons() {
  * @param {string} label Button label.
  */
 export function setButtonUiState(buttonId, labelId, state, label) {
-  const button = document.getElementById(buttonId);
-  const buttonLabel = document.getElementById(labelId);
-  if (buttonLabel) {
-    buttonLabel.textContent = label;
+  const $button = $(`#${buttonId}`);
+  const $buttonLabel = $(`#${labelId}`);
+  if ($buttonLabel.length) {
+    $buttonLabel.text(label);
   }
   if (state === 1) {
-    button.classList.remove("running");
-    button.disabled = true;
+    $button.removeClass("running").prop("disabled", true);
   } else if (state === 2) {
-    button.classList.remove("running");
-    button.disabled = false;
+    $button.removeClass("running").prop("disabled", false);
   } else if (state === 3) {
-    button.classList.add("running");
-    button.disabled = false;
+    $button.addClass("running").prop("disabled", false);
   }
 }
 
@@ -142,17 +141,17 @@ export function setButtonUiState(buttonId, labelId, state, label) {
  * @param {boolean} isMask Mask URL if it's true, Unmask otherwise.
  */
 export function maskwebhookPathInputValue(isMask) {
-  const input = document.getElementById(Const.domId.webhookPath);
-  const iconMask = document.getElementById(Const.domId.webhookIconMask);
-  const iconUnMask = document.getElementById(Const.domId.webhookIconUnMask);
+  const $input = $(`#${Const.domId.webhookPath}`);
+  const $iconMask = $(`#${Const.domId.webhookIconMask}`);
+  const $iconUnMask = $(`#${Const.domId.webhookIconUnMask}`);
   if (isMask) {
-    input.setAttribute("type", "password");
-    iconMask.classList.remove("d-none");
-    iconUnMask.classList.add("d-none");
+    $input.attr("type", "password");
+    $iconMask.removeClass("d-none");
+    $iconUnMask.addClass("d-none");
   } else {
-    input.setAttribute("type", "text");
-    iconMask.classList.add("d-none");
-    iconUnMask.classList.remove("d-none");
+    $input.attr("type", "text");
+    $iconMask.addClass("d-none");
+    $iconUnMask.removeClass("d-none");
   }
 }
 
@@ -160,8 +159,7 @@ export function maskwebhookPathInputValue(isMask) {
  * Toggle Webhook URL Mask Icon visible state.
  */
 export function togglewebhookPathInputMask() {
-  const maskIcon = document.getElementById(Const.domId.webhookIconMask);
-  const isMaskNext = maskIcon.classList.contains("d-none");
+  const isMaskNext = $(`#${Const.domId.webhookIconMask}`).hasClass("d-none");
   maskwebhookPathInputValue(isMaskNext);
 }
 
@@ -173,28 +171,24 @@ export function togglewebhookPathInputMask() {
  * @param {string} additionMessage Alert addition message.
  */
 export function showAlertMessage(isShow, isError, message, additionMessage) {
-  if (isShow) {
-    const template = document.getElementById(Const.domId.alertTemplate);
-    const alertBlock = template.cloneNode(true);
-    const alert = alertBlock.getElementsByClassName("alert");
-    const alertMessage = alert[0].getElementsByClassName("alertMessage");
-    const alertAdditionMessage = alert[0].getElementsByClassName(
-      "alertAdditionMessage"
-    );
-    alert[0].id = Const.domId.alert;
-    alert[0].classList.add(isError ? "alert-danger" : "alert-success");
-    alertMessage[0].textContent = message;
-    if (additionMessage) {
-      alertAdditionMessage[0].textContent = additionMessage;
-    } else {
-      alertAdditionMessage[0].remove();
-    }
-    template.before(alert[0]);
+  if (!isShow) {
+    $(`#${Const.domId.alert}`).remove();
   } else {
-    const alert = document.getElementById(Const.domId.alert);
-    if (alert) {
-      alert.remove();
+    const $template = $(`#${Const.domId.alertTemplate}`);
+    const $alertBlock = $template.clone(true);
+    const $alert = $(".alert", $alertBlock);
+    const $alertMessage = $(".alertMessage", $alert);
+    const $alertAdditionMessage = $(".alertAdditionMessage", $alert);
+    $alert
+      .attr("id", Const.domId.alert)
+      .addClass(isError ? "alert-danger" : "alert-success");
+    $alertMessage.text(message);
+    if (additionMessage) {
+      $alertAdditionMessage.text(additionMessage);
+    } else {
+      $alertAdditionMessage.remove();
     }
+    $template.before($alert);
   }
 }
 
@@ -202,110 +196,97 @@ export function showAlertMessage(isShow, isError, message, additionMessage) {
  * construct options js.
  */
 export function constructOptions() {
-  const webhookInput = document.getElementById(Const.domId.webhookPath);
-  if (webhookInput) {
-    webhookInput.addEventListener("blur", () => {
-      removeSlackHostPathFromSlackwebhookPath();
-      validateSlackwebhookPath();
-      validateButtons();
-    });
-  }
+  $(`#${Const.domId.webhookPath}`).on("blur", () => {
+    removeSlackHostPathFromSlackwebhookPath();
+    validateSlackwebhookPath();
+    validateButtons();
+  });
 
-  const testButton = document.getElementById(Const.domId.testButton);
-  if (testButton) {
-    testButton.addEventListener("click", () => {
-      const isValid = validateForm();
-      if (!isValid) {
-        return;
+  $(`#${Const.domId.testButton}`).on("click", () => {
+    const isValid = validateForm();
+    if (!isValid) {
+      return;
+    }
+
+    showAlertMessage(false);
+
+    setButtonUiState(
+      Const.domId.testButton,
+      Const.domId.testButtonLabel,
+      3,
+      Const.label.testing
+    );
+    setTimeout(async () => {
+      const cts = new CursoredToSlack(chrome);
+      const option = getOptionFromForm();
+      const result = await cts
+        .sendRequestToSlackApi("test message.", option.webhookUrl)
+        .catch((error) => error);
+
+      const isError = result instanceof Error;
+      if (isError) {
+        showAlertMessage(true, isError, Const.label.testFailed, result.stack);
+      } else {
+        showAlertMessage(
+          true,
+          isError,
+          Const.label.testSuccess,
+          Const.label.testSuccessAddition
+        );
       }
-
-      showAlertMessage(false);
 
       setButtonUiState(
         Const.domId.testButton,
         Const.domId.testButtonLabel,
-        3,
-        Const.label.testing
+        2,
+        Const.label.test
       );
-      setTimeout(async () => {
-        const cts = new CursoredToSlack(chrome);
-        const option = getOptionFromForm();
-        const result = await cts
-          .sendRequestToSlackApi("test message.", option.webhookUrl)
-          .catch((error) => error);
+    }, Const.uiStateChangeIntervalInSec * 1000);
+  });
 
-        const isError = result instanceof Error;
-        if (isError) {
-          showAlertMessage(true, isError, Const.label.testFailed, result.stack);
-        } else {
-          showAlertMessage(
-            true,
-            isError,
-            Const.label.testSuccess,
-            Const.label.testSuccessAddition
-          );
-        }
+  $(`#${Const.domId.form}`).on("submit", () => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const isValid = validateForm();
+    if (!isValid) {
+      return;
+    }
+
+    showAlertMessage(false);
+
+    setButtonUiState(
+      Const.domId.saveButton,
+      Const.domId.saveButtonLabel,
+      3,
+      Const.label.saving
+    );
+    setTimeout(() => {
+      const cts = new CursoredToSlack(chrome);
+      const option = getOptionFromForm();
+      cts.setOptions(option).then(() => {
+        showAlertMessage(true, false, Const.label.saveSuccess);
 
         setButtonUiState(
-          Const.domId.testButton,
-          Const.domId.testButtonLabel,
+          Const.domId.saveButton,
+          Const.domId.saveButtonLabel,
           2,
-          Const.label.test
+          Const.label.save
         );
-      }, Const.uiStateChangeIntervalInSec * 1000);
-    });
-  }
+      });
+    }, Const.uiStateChangeIntervalInSec * 1000);
+  });
 
-  const form = document.getElementById(Const.domId.form);
-  if (form) {
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      const isValid = validateForm();
-      if (!isValid) {
-        return;
-      }
-
-      showAlertMessage(false);
-
-      setButtonUiState(
-        Const.domId.saveButton,
-        Const.domId.saveButtonLabel,
-        3,
-        Const.label.saving
-      );
-      setTimeout(() => {
-        const cts = new CursoredToSlack(chrome);
-        const option = getOptionFromForm();
-        cts.setOptions(option).then(() => {
-          showAlertMessage(true, false, Const.label.saveSuccess);
-
-          setButtonUiState(
-            Const.domId.saveButton,
-            Const.domId.saveButtonLabel,
-            2,
-            Const.label.save
-          );
-        });
-      }, Const.uiStateChangeIntervalInSec * 1000);
-    });
-  }
-
-  const maskButton = document.getElementById(Const.domId.webhookMaskButton);
-  if (maskButton) {
-    maskButton.addEventListener("click", () => {
-      togglewebhookPathInputMask();
-    });
-  }
+  $(`#${Const.domId.webhookMaskButton}`).on("click", () => {
+    togglewebhookPathInputMask();
+  });
 
   // initialize.
   const cts = new CursoredToSlack(chrome);
   cts.getOptions().then((options) => {
     const isValid = Object.keys(options.validate()).length === 0;
     if (isValid) {
-      document.getElementById(Const.domId.webhookPath).value =
-        options.webhookPath;
+      $(`#${Const.domId.webhookPath}`).val(options.webhookPath);
     }
     validateButtons();
 
