@@ -1,7 +1,7 @@
 import {
   CursoredToSlackOption,
   SlackWebhookCommonHostPath,
-} from "./cursoredtoslack-option";
+} from "./copytoslack-option";
 
 describe("CursoredToSlackOption", () => {
   test("property", () => {

@@ -148,7 +148,6 @@ describe("options", () => {
 
   test("maskwebhookPathInputValue", () => {
     setMockHtml(document);
-    let mask, Unmask, input;
 
     maskwebhookPathInputValue(true);
     expect($(`#${Const.domId.webhookIconMask}`).hasClass("d-none")).toBe(false);
@@ -167,7 +166,6 @@ describe("options", () => {
 
   test("togglewebhookPathInputMask", () => {
     setMockHtml(document);
-    let mask, Unmask, input;
 
     // set initial state.
     maskwebhookPathInputValue(true);

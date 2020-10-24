@@ -1,4 +1,4 @@
-import CursoredToSlack from "./cursoredtoslack";
+import CursoredToSlack from "./copytoslack";
 
 chrome.runtime.onInstalled.addListener(function () {
   const cts = new CursoredToSlack(chrome);

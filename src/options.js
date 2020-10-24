@@ -1,10 +1,10 @@
 import $ from "jquery";
 import "bootstrap";
-import CursoredToSlack from "./cursoredtoslack";
+import CursoredToSlack from "./copytoslack";
 import {
   CursoredToSlackOption,
   SlackWebhookCommonHostPath,
-} from "./cursoredtoslack-option";
+} from "./copytoslack-option";
 
 export const Const = {
   domId: {
@@ -78,18 +78,18 @@ export function validateSlackwebhookPath() {
   const option = getOptionFromForm();
   const errors = option.validate();
   const $input = $(`#${Const.domId.webhookPath}`);
-  if (errors["webhookPath"]) {
+  if (errors.webhookPath) {
     $input.addClass("is-invalid");
   } else {
     $input.removeClass("is-invalid");
   }
 
-  if (errors["webhookPath"]) {
+  if (errors.webhookPath) {
     const $feedBack = $(`#${Const.domId.webhookFeedback}`);
-    $feedBack.text(errors["webhookPath"]);
+    $feedBack.text(errors.webhookPath);
   }
 
-  return typeof errors["webhookPath"] === "undefined";
+  return typeof errors.webhookPath === "undefined";
 }
 
 /**
@@ -98,7 +98,7 @@ export function validateSlackwebhookPath() {
 export function validateButtons() {
   const option = getOptionFromForm();
   const errors = option.validate();
-  const isValid = typeof errors["webhookPath"] === "undefined";
+  const isValid = typeof errors.webhookPath === "undefined";
 
   setButtonUiState(
     Const.domId.testButton,
