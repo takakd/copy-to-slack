@@ -1,26 +1,22 @@
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
-  slack: circleci/slack@3.4.2
-workflows:
-  node-tests:
-    jobs:
-      - node/test
+  node: circleci/node@4.0
+  # Ref. https://github.com/CircleCI-Public/slack-orb
+  slack: circleci/slack@4.0
 jobs:
   build-test-and-notify:
+    executor:
+      name: node/default
     steps:
-      #Ref.: https://circleci.com/developer/orbs/orb/circleci/node#jobs-test
-      - node/test
+      - checkout
+      - node/install-packages
+      - run:
+          command: npm test
       - slack/notify:
-          color: "#42e2f4"
-          mentions: "yemiwebby,"
-          message: A custom message to notify the channel about the latest build
-      - slack/notify:
-          event: fail
-          mentions: '@takakd'
+          event: always
           template: basic_fail_1
       - slack/notify:
-          event: pass
+          event: always
           template: success_tagged_deploy_1
 workflows:
   build-and-notify:
