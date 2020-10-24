@@ -2,6 +2,10 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
   slack: circleci/slack@3.4.2
+workflows:
+  node-tests:
+    jobs:
+      - node/test
 jobs:
   build-test-and-notify:
     steps:
