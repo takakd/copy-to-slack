@@ -9,7 +9,9 @@ Chrome extension to note with Slack.
 ![License-MIT](https://img.shields.io/badge/License-MIT-informational?style=flat)
 
 ##Features
+
 Send contents dragged to slack.
+
 ![Features](/doc/features.gif)
 
 ## Install
