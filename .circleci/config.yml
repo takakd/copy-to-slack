@@ -13,10 +13,10 @@ jobs:
           name: Install dependencies
           command: npm install
       - run: npm test
-      - slack/status:
+      - slack/notify:
           fail_only: false
           template: success_tagged_deploy_1
-      - slack/status:
+      - slack/notify:
           fail_only: true
           template: basic_fail_1
 workflows:
