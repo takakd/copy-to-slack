@@ -12,13 +12,9 @@ jobs:
           name: Install dependencies
           command: npm install
       - run: npm test
-      - slack/notify:
-          color: "#42e2f4"
-          mentions: "yemiwebby,"
-          message: A custom message to notify the channel about the latest build
       - slack/status:
-          fail_only: true
-          mentions: "yemiwebby"
+          fail_only: false
+          mentions: "takakd"
 workflows:
   build-and-notify:
     jobs:
