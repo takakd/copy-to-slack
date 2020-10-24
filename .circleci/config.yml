@@ -22,3 +22,5 @@ workflows:
   build-and-notify:
     jobs:
       - build-test-and-notify
+        context:
+          - slack-secrets
