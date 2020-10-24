@@ -24,7 +24,7 @@ describe("options", () => {
     done = await c.setOptions(options).catch((error) => {
       return error;
     });
-    expect(done).toBe("wrong instanceof");
+    expect(done).toStrictEqual(new Error("wrong instanceof"));
 
     got = await c.getOptions().catch((error) => {
       return error;
