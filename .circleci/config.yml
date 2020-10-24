@@ -5,19 +5,22 @@ orbs:
   slack: circleci/slack@4.0.2
 jobs:
   build-test-and-notify:
+    executor:
+      name: node/default
     steps:
-      - node/test
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run: npm test
       - slack/notify:
           color: "#42e2f4"
           mentions: "yemiwebby,"
           message: A custom message to notify the channel about the latest build
-      - slack/notify:
-          event: fail
-          mentions: '@takakd'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: success_tagged_deploy_1
+      - slack/status:
+          fail_only: true
+          mentions: "yemiwebby"
+
 workflows:
   build-and-notify:
     jobs:
