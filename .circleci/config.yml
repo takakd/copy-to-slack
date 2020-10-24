@@ -17,7 +17,7 @@ jobs:
           fail_only: false
           template: success_tagged_deploy_1
       - slack/status:
-          fail_only: false
+          fail_only: true
           template: basic_fail_1
 workflows:
   build-and-notify:
