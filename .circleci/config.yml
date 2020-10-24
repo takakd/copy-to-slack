@@ -15,11 +15,7 @@ jobs:
       - slack/notify:
           event: always
           template: basic_fail_1
-      - slack/notify:
-          event: always
-          template: success_tagged_deploy_1
 workflows:
   build-and-notify:
     jobs:
-      - build-test-and-notify:
-          context: slack-secrets
+      - build-test-and-notify
