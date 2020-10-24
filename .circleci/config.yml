@@ -14,10 +14,10 @@ jobs:
           command: npm install
       - run: npm test
       - slack/notify:
-          fail_only: false
+          event: pass
           template: success_tagged_deploy_1
       - slack/notify:
-          fail_only: true
+          event: fail
           template: basic_fail_1
 workflows:
   build-and-notify:
