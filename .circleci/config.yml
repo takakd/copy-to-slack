@@ -16,10 +16,6 @@ jobs:
           color: "#42e2f4"
           mentions: "yemiwebby,"
           message: A custom message to notify the channel about the latest build
-      - slack/notify:
-          event: fail
-          mentions: '@takakd'
-          template: basic_fail_1
       - slack/status:
           fail_only: false
           mentions: "takakd"
