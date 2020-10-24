@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
+  # Ref. https://github.com/CircleCI-Public/slack-orb
   slack: circleci/slack@3.4.2
 jobs:
   build-test-and-notify:
@@ -15,6 +16,11 @@ jobs:
       - slack/status:
           fail_only: false
           mentions: "takakd"
+          template: success_tagged_deploy_1
+      - slack/status:
+          fail_only: false
+          mentions: "takakd"
+          template: basic_fail_1
 workflows:
   build-and-notify:
     jobs:
